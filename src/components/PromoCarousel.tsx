@@ -3,10 +3,19 @@ import Carousel from 'react-multi-carousel'
 import "react-multi-carousel/lib/styles.css"
 import { Box } from '@mui/material'
 
+interface StyledImageInterface {
+    name: string;
+}
+const StyledImage = ({name}: StyledImageInterface) => {
+    return (<Box sx={{display: "flex", justifyContent:"center",}}>
+                <img src={`/images/homepage/${name}.webp`} width="600px" height="280px"/>
+            </Box>)
+}
+const names: Array<string> = ["bread","cake", "cookie", "eggTart"]
 function PromoCarousel() {
   return (
-    <Box display={"flex"} flexGrow={1} alignContent={"center"} justifyContent={"center"}>   
-        <Box sx={{width: "800px"}}>
+    <Box display={"flex"} flexGrow={1} alignContent={"center"} justifyContent={"center"} marginTop={"10px"}>   
+        <Box sx={{width: "1000px"}}>
                 <Carousel
     additionalTransfrom={0}
     arrows
@@ -31,7 +40,7 @@ function PromoCarousel() {
             max: 3000,
             min: 1024
         },
-        items: 10,
+        items: 1,
         partialVisibilityGutter: 40
         },
         mobile: {
@@ -47,7 +56,7 @@ function PromoCarousel() {
             max: 1024,
             min: 464
         },
-        items: 2,
+        items: 1,
         partialVisibilityGutter: 30
         }
     }}
@@ -60,15 +69,7 @@ function PromoCarousel() {
     slidesToSlide={1}
     swipeable
     >
-        <img src="/images/homepage/cake.webp" width="280px" height="280px"/>
-        <img src="/images/homepage/cake.webp" width="280px" height="280px"/>
-        <img src="/images/homepage/cake.webp" width="280px" height="280px"/>
-        <img src="/images/homepage/cake.webp" width="280px" height="280px"/>
-        <img src="/images/homepage/cake.webp" width="280px" height="280px"/>
-        <img src="/images/homepage/cake.webp" width="280px" height="280px"/>
-        <img src="/images/homepage/cake.webp" width="280px" height="280px"/>
-        <img src="/images/homepage/cake.webp" width="280px" height="280px"/>
-        <img src="/images/homepage/cake.webp" width="280px" height="280px"/>
+        {names.map((name) => <StyledImage name={name} key={name}/>)}
     </Carousel>
         </Box>
     </Box>
