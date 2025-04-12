@@ -26,7 +26,7 @@ function PromoCarousel() {
     dotListClass=""
     draggable
     focusOnSelect={false}
-    infinite={false}
+    infinite={true}
     itemClass=""
     keyBoardControl
     minimumTouchDrag={80}
