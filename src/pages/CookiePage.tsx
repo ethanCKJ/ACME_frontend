@@ -1,10 +1,12 @@
 import React from 'react'
 import Header from '../components/Header'
-import { Box, Grid2, Slider, Typography, Input, TextField, FormControl, MenuItem, Select } from '@mui/material'
+import { Box, Grid2, Slider, Typography, Input, TextField, FormControl, MenuItem, Select, Modal } from '@mui/material'
 import { useState } from 'react'
 import { Recommend } from '@mui/icons-material'
+import ProductCard from '../components/ProductCard'
 
 const sortOrderOptions = ["Recommended","Price high to low","Price low to high","A to Z","Z to A",]
+
 function CookiePage() {
     // define min and max price values - have defaults
     const [priceRange, setPriceRange] = useState<number[]>([0, 100])
@@ -81,7 +83,11 @@ function CookiePage() {
                             </Select>
                         </FormControl>
                     </Box>
-                    foo
+                    <Box sx={{display: "flex", justifyContent: "space-around", columnGap:"20px", marginLeft: "20px"}}>
+                        <ProductCard></ProductCard>
+                        <ProductCard></ProductCard>
+                        <ProductCard></ProductCard>
+                    </Box>
                 </Box>
                 
             </Box>
