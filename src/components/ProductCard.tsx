@@ -15,55 +15,57 @@ interface ProductCardProps {
 // }
 function ProductCard({productId, imageName, addToCart, productName, description, price}: ProductCardProps) {
     const [open, setOpen] = useState<boolean>(false);
-    const [quantity, setQuantity] = useState<number>(1);
     description="foo"
     // Why make a separate function with arguments when you can just use the local variables?
-    const handleQuantityIncrement = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault()
-        setQuantity(quantity+1)
-    }
-    const handleQuantityDecrement = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault()
-        setQuantity(quantity-1)
-    }
-    const ProductModal = () => (
-        <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        >
-            <Box sx={{width:"450px", m:0, p:0}}>
-                <img
-                src={`/images/cookies/${imageName}`}
-                width="450px"
-                height="300px"
-                alt={productName}
-                >
-                </img>
-                <Box sx={{padding: "5px 0px 10px 10px"}}>
-                    <Typography variant="body1" fontSize={"18px"}>{productName}</Typography>
-                    {/* Default Typography is already body1 */}
-                    <Typography>{description}</Typography>
-                    <Typography>{`Price \$${price} per cookie`}</Typography>
-                    <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-                        <Typography>Quantity</Typography>
-                        <Box sx={{display:"flex"}}>
-                            <button onClick={handleQuantityIncrement}>Add</button>
-                            <IconButton type="button" onClick={handleQuantityIncrement} autoFocus>
-                                <AddBoxOutlinedIcon/>
-                            </IconButton>
-                            <Box sx={{width:"80px",height:"auto", margin:"3px 0px", padding:0, border: "2px solid grey", display:"flex", justifyContent:"center", alignItems:"center"}}><Typography>{quantity}</Typography></Box>
-                            <IconButton>
-                                <IndeterminateCheckBoxOutlinedIcon/>
-                            </IconButton>
+    const ProductModal = () => {
+        const handleQuantityIncrement = (event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault()
+            setQuantity(quantity+1)
+        }
+        const handleQuantityDecrement = (event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault()
+            setQuantity(quantity-1)
+        }
+        const [quantity, setQuantity] = useState<number>(1);
+        return(
+            <Dialog
+            open={open}
+            onClose={() => setOpen(false)}
+            >
+                <Box sx={{width:"450px", m:0, p:0}}>
+                    <img
+                    src={`/images/cookies/${imageName}`}
+                    width="450px"
+                    height="300px"
+                    alt={productName}
+                    >
+                    </img>
+                    <Box sx={{padding: "5px 0px 10px 10px"}}>
+                        <Typography variant="body1" fontSize={"18px"}>{productName}</Typography>
+                        {/* Default Typography is already body1 */}
+                        <Typography>{description}</Typography>
+                        <Typography>{`Price \$${price} per cookie`}</Typography>
+                        <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+                            <Typography>Quantity</Typography>
+                            <Box sx={{display:"flex"}}>
+                                <button onClick={handleQuantityIncrement}>Add</button>
+                                <IconButton type="button" onClick={handleQuantityIncrement} autoFocus>
+                                    <AddBoxOutlinedIcon/>
+                                </IconButton>
+                                <Box sx={{width:"80px",height:"auto", margin:"3px 0px", padding:0, border: "2px solid grey", display:"flex", justifyContent:"center", alignItems:"center"}}><Typography>{quantity}</Typography></Box>
+                                <IconButton>
+                                    <IndeterminateCheckBoxOutlinedIcon/>
+                                </IconButton>
+                            </Box>
                         </Box>
+                        
                     </Box>
-                    
+
+
                 </Box>
-
-
-            </Box>
-        </Dialog>
-    )
+            </Dialog>
+        )
+    }
     
     productName="White Chocolate and Macadamia nut cookie"
     imageName="mint_cookie.webp"
