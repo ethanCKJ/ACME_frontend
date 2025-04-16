@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Card, CardContent, CardMedia, Typography, Button, Dialog, IconButton, TextField } from '@mui/material'
+import { Box, Card, CardContent, CardMedia, Typography, Button, Dialog, IconButton, TextField, useTheme } from '@mui/material'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
 interface ProductCardProps {
@@ -7,15 +7,15 @@ interface ProductCardProps {
     imageName: string,
     addToCart: (productId: number, quantity: number) => void,
     productName: string,
-    description: string,
+    productInfo: string,
     price: number,
 }
 // function ProductModal(){
 
 // }
-function ProductCard({productId, imageName, addToCart, productName, description, price}: ProductCardProps) {
+function ProductCard( {productId, imageName, addToCart, productName, productInfo, price}: ProductCardProps) {
     const [open, setOpen] = useState<boolean>(false);
-    description="foo"
+    productInfo="foo"
     // Why make a separate function with arguments when you can just use the local variables?
     const ProductModal = () => {
         const handleQuantityIncrement = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -24,9 +24,12 @@ function ProductCard({productId, imageName, addToCart, productName, description,
         }
         const handleQuantityDecrement = (event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault()
-            setQuantity(quantity-1)
+            setQuantity(Math.max(1,quantity-1))
         }
         const [quantity, setQuantity] = useState<number>(1);
+        const theme = useTheme();
+        console.log(theme)
+        
         return(
             <Dialog
             open={open}
@@ -43,21 +46,24 @@ function ProductCard({productId, imageName, addToCart, productName, description,
                     <Box sx={{padding: "5px 0px 10px 10px"}}>
                         <Typography variant="body1" fontSize={"18px"}>{productName}</Typography>
                         {/* Default Typography is already body1 */}
-                        <Typography>{description}</Typography>
+                        <Typography>{productInfo}</Typography>
                         <Typography>{`Price \$${price} per cookie`}</Typography>
-                        <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+                        <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center", padding: "0px 5px"}}>
                             <Typography>Quantity</Typography>
                             <Box sx={{display:"flex"}}>
-                                <button onClick={handleQuantityIncrement}>Add</button>
-                                <IconButton type="button" onClick={handleQuantityIncrement} autoFocus>
+                                <IconButton onClick={handleQuantityIncrement} color='primary' >
                                     <AddBoxOutlinedIcon/>
                                 </IconButton>
-                                <Box sx={{width:"80px",height:"auto", margin:"3px 0px", padding:0, border: "2px solid grey", display:"flex", justifyContent:"center", alignItems:"center"}}><Typography>{quantity}</Typography></Box>
-                                <IconButton>
+                                <Box sx={{width:"70px",height:"30px", margin:"3px 0px", padding:0, border: `2px solid ${theme.palette.primary.main}`, display:"flex", justifyContent:"center", alignItems:"center"}}><Typography>{quantity}</Typography></Box>
+                                <IconButton onClick={handleQuantityDecrement} color='primary'>
                                     <IndeterminateCheckBoxOutlinedIcon/>
                                 </IconButton>
                             </Box>
+                            <Button variant="outlined" >
+                                Add to shopping cart
+                            </Button>
                         </Box>
+                        
                         
                     </Box>
 
