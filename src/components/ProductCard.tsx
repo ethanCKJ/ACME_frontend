@@ -13,9 +13,12 @@ interface ProductCardProps {
 // function ProductModal(){
 
 // }
-function ProductCard( {productId, imageName, addToCart, productName, productInfo, price}: ProductCardProps) {
+function ProductCard(props: ProductCardProps) {
+    const {productId, imageName, addToCart, productName, productInfo, price} = props.props;
+    console.log(props)
+    console.log(productName)
+    console.log(imageName)
     const [open, setOpen] = useState<boolean>(false);
-    productInfo="foo"
     // Why make a separate function with arguments when you can just use the local variables?
     const ProductModal = () => {
         const handleQuantityIncrement = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -28,16 +31,15 @@ function ProductCard( {productId, imageName, addToCart, productName, productInfo
         }
         const [quantity, setQuantity] = useState<number>(1);
         const theme = useTheme();
-        console.log(theme)
-        
         return(
             <Dialog
             open={open}
             onClose={() => setOpen(false)}
             >
+                
                 <Box sx={{width:"450px", m:0, p:0}}>
                     <img
-                    src={`/images/cookies/${imageName}`}
+                    src={`/images/cookies/${imageName}.webp`}
                     width="450px"
                     height="300px"
                     alt={productName}
@@ -72,9 +74,6 @@ function ProductCard( {productId, imageName, addToCart, productName, productInfo
             </Dialog>
         )
     }
-    
-    productName="White Chocolate and Macadamia nut cookie"
-    imageName="mint_cookie.webp"
   return (
     <Box sx={{minWidth: "320px", padding:0}}>
         <ProductModal/>
@@ -83,7 +82,7 @@ function ProductCard( {productId, imageName, addToCart, productName, productInfo
             component="img"
             alt={productName}
             height="214"
-            image={`/images/cookies/${imageName}`}
+            image={`/images/cookies/${imageName}.webp`}
             />
             <CardContent sx={{padding: "0px 5px", m:0}}>
                 <Typography variant="h6">{productName}</Typography>

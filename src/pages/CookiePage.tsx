@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import api from '../components/api'
 import Header from '../components/Header'
 import { Box, Grid2, Slider, Typography, Input, TextField, FormControl, MenuItem, Select, Modal } from '@mui/material'
 import { useState } from 'react'
@@ -16,6 +17,25 @@ function CookiePage() {
     }
     const maxPrice = 100
     const minPrice = 0
+    const [products, setProducts] = useState<object[]>([])
+
+    const getProducts = async(category: string) =>{
+        try {
+            const res = await api.get(`/products/${category}?minPrice=${minPrice}&maxPrice=${maxPrice}`)
+            if (res.status === 200){
+                setProducts(res.data)
+            }
+            else{
+                console.log("Error in response")
+                console.log(res)
+            }
+        }
+        catch (error){
+            console.log(error)
+        }
+    }
+    useEffect(() => {getProducts("cookie")}, [])
+
     const handleSliderUpdate = (event: Event, newPriceRange: (number | string)[]) => {
         let min = priceRange[0]
         let max = priceRange[1]
@@ -30,6 +50,7 @@ function CookiePage() {
     const handleSortOrderChange = (event: Event) => {
         let newOrder = event.target.value;
         if (newOrder !== null && newOrder !== sortOrder) {
+            console.log(products)
             // sort the data
         }
     }
@@ -81,10 +102,8 @@ function CookiePage() {
                             </Select>
                         </FormControl>
                     </Box>
-                    <Box sx={{ display: "flex", justifyContent: "space-around", columnGap: "20px", marginLeft: "20px" }}>
-                        <ProductCard></ProductCard>
-                        <ProductCard></ProductCard>
-                        <ProductCard></ProductCard>
+                    <Box sx={{ display: "flex", justifyContent: "start", columnGap: "30px", rowGap:"30px", marginLeft: "20px", flexWrap: "wrap" }}>
+                        {products.map((data, index) => <ProductCard key={index} props={data}/>)}
                     </Box>
                 </Box>
 
