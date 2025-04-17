@@ -4,11 +4,13 @@ import Header from '../components/Header'
 import { Box, Grid2, Slider, Typography, Input, TextField, FormControl, MenuItem, Select, Modal, useTheme } from '@mui/material'
 import { useState } from 'react'
 import ProductCard from '../components/ProductCard'
+import ShoppingCartPanel from '../components/ShoppingCartPanel'
 
 const sortOrderOptions = ["Popularity", "Price high to low", "Price low to high", "A to Z", "Z to A",]
-type cartObj = {
+export type cartObj = {
     productId: number,
     productName: string,
+    imageName: string,
     quantity: number,
     price: number
 }
@@ -75,16 +77,26 @@ function CookiePage() {
             </Box>)
     }
     
-    const addToCart = (productId:number, productName: string, quantity: number, price:number) =>{
-        for (let index = 0; index < cartContent.length; index++) {
-            if (cartContent[index].productId === productId){
-                cartContent[index].quantity += quantity;
-                return;
+    const addToCart = (productId:number, productName: string, quantity: number, price:number, imageName: string) =>{
+        console.log("Add to cart ", quantity)
+        let updated = false;
+        const newCartContent = cartContent.map((item) => {
+            if (item.productId === productId){
+                // Clone item
+                let newItem = {...item}
+                newItem.quantity += quantity;
+                updated = true;
+                return newItem;
             }
-        }
+            // We return the original
+            return item;
+        })
         // Add new product to cart
         // const newContent: cartObj = {productId: productId, productName: productName, quantity:quantity, price: price}
-        setCartContent(cartContent => [...cartContent, {productId: productId, productName: productName, quantity:quantity, price:price}])
+        if (!updated){
+            newCartContent.push({productId: productId, productName: productName, quantity:quantity, price:price, imageName: imageName})
+        }
+        setCartContent(newCartContent)
     }
     // create a slider
     // have value be changes
@@ -93,7 +105,8 @@ function CookiePage() {
         <>
             <Header  cartCount={cartCount}/>
             <Box sx={{ display: "flex", width: "100%", minHeight: "800px", padding: "0px 20px", background: "beige", }}>
-                <Box sx={{ width: "220px", padding: "5px" }}>
+                {/* Filter panel */}
+                <Box sx={{ minWidth: "200px", padding: "5px" }}>
                     <Typography variant="body1" fontSize={24}>Filter by</Typography>
                     <hr></hr>
                     <Typography variant="body1" fontSize={16}>Price</Typography>
@@ -136,8 +149,11 @@ function CookiePage() {
                     : 
                     <Box sx={{ display: "flex", justifyContent: "start", columnGap: "30px", rowGap:"30px", marginLeft: "20px", flexWrap: "wrap" }}>
                         {products.map((data, index) => <ProductCard key={index} productId={data.id} imageName={data.imageName} productName={data.productName} productInfo={data.productInfo} price={data.price} addToCart={addToCart}/>)}
-                    </Box>}
+                    </Box>
+                    
+                    }
                 </Box>
+                <ShoppingCartPanel cartContent={cartContent} setCartContent={setCartContent}/>
 
             </Box>
         </>

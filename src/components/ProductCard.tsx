@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { Box, Card, CardContent, CardMedia, Typography, Button, Dialog, IconButton, TextField, useTheme } from '@mui/material'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/IndeterminateCheckBoxOutlined';
+import QuantityInput from './QuantityInput';
 interface ProductCardProps {
     productId: number,
     imageName: string,
-    addToCart: (productId:number, productName: string, quantity: number, price:number) => void,
+    addToCart: (productId:number, productName: string, quantity: number, price:number, imageName: string) => void,
     productName: string,
     productInfo: string,
     price: number,
@@ -18,15 +19,15 @@ function ProductCard({productId, imageName, addToCart, productName, productInfo,
     const ProductModal = () => {
         const handleQuantityIncrement = (event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault()
-            setQuantity(quantityState+1)
+            setQuantity(quantity+1)
         }
         const handleQuantityDecrement = (event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault()
-            setQuantity(Math.max(1,quantityState-1))
+            setQuantity(Math.max(1,quantity-1))
         }
-        const [quantityState, setQuantity] = useState<number>(1);
+        const [quantity, setQuantity] = useState<number>(1);
         const theme = useTheme();
-        let quantity = 5;
+
         return(
             <Dialog
             open={open}
@@ -47,16 +48,8 @@ function ProductCard({productId, imageName, addToCart, productName, productInfo,
                         <Typography>{`Price \$${price} per unit`}</Typography>
                         <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center", padding: "0px 5px"}}>
                             <Typography>Quantity</Typography>
-                            <Box sx={{display:"flex", marginRight:"80px"}}>
-                                <IconButton onClick={handleQuantityDecrement} color='primary'>
-                                    <IndeterminateCheckBoxOutlinedIcon/>
-                                </IconButton>
-                                <Box sx={{width:"70px",height:"30px", margin:"3px 0px", padding:0, border: `2px solid ${theme.palette.primary.main}`, display:"flex", justifyContent:"center", alignItems:"center"}}><Typography>{quantityState}</Typography></Box>
-                                <IconButton onClick={handleQuantityIncrement} color='primary' >
-                                    <AddBoxOutlinedIcon/>
-                                </IconButton>
-                            </Box>
-                            <Button variant="outlined" onClick={()=>addToCart(productId, productName,quantityState,price)}>
+                            <QuantityInput quantity={quantity} setQuantity={setQuantity}/>
+                            <Button variant="outlined" onClick={()=>{addToCart(productId, productName,quantity,price, imageName), setOpen(false)}}>
                                 Add to cart
                             </Button>
                         </Box>
