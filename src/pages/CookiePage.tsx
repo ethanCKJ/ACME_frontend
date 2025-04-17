@@ -1,11 +1,18 @@
 import React, { useEffect } from 'react'
 import api from '../components/api'
 import Header from '../components/Header'
-import { Box, Grid2, Slider, Typography, Input, TextField, FormControl, MenuItem, Select, Modal } from '@mui/material'
+import { Box, Grid2, Slider, Typography, Input, TextField, FormControl, MenuItem, Select, Modal, useTheme } from '@mui/material'
 import { useState } from 'react'
 import ProductCard from '../components/ProductCard'
 
 const sortOrderOptions = ["Popularity", "Price high to low", "Price low to high", "A to Z", "Z to A",]
+type cartObj = {
+    productId: number,
+    productName: string,
+    quantity: number,
+    price: number
+}
+
 
 function CookiePage() {
     // define min and max price values - have defaults
@@ -18,6 +25,9 @@ function CookiePage() {
     const maxPrice = 100
     const minPrice = 0
     const [products, setProducts] = useState<object[]>([])
+    const [cartCount, setCartCount] = useState<number>(0)
+    const [cartContent, setCartContent] = useState<cartObj[]>([])
+    const theme = useTheme();
 
     const getProducts = async(category: string) =>{
         try {
@@ -54,16 +64,34 @@ function CookiePage() {
             // sort the data
         }
     }
-
-
-
+    
+    const NoProductsAvailable = () =>{
+        console.log("No products")
+        return(
+            <Box sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+                <Box sx={{display:"flex",justifyContent:"center", alignItems:"center", width:"800px", height:"200px", border: `5px solid ${theme.palette.primary.light}`, borderRadius: "10px"}}>
+                    <Typography variant="h4">No products match your filter</Typography>
+                </Box>
+            </Box>)
+    }
+    
+    const addToCart = (productId:number, productName: string, quantity: number, price:number) =>{
+        for (let index = 0; index < cartContent.length; index++) {
+            if (cartContent[index].productId === productId){
+                cartContent[index].quantity += quantity;
+                return;
+            }
+        }
+        // Add new product to cart
+        // const newContent: cartObj = {productId: productId, productName: productName, quantity:quantity, price: price}
+        setCartContent(cartContent => [...cartContent, {productId: productId, productName: productName, quantity:quantity, price:price}])
+    }
     // create a slider
     // have value be changes
     // use min and max in client-side filtering
-
     return (
         <>
-            <Header />
+            <Header  cartCount={cartCount}/>
             <Box sx={{ display: "flex", width: "100%", minHeight: "800px", padding: "0px 20px", background: "beige", }}>
                 <Box sx={{ width: "220px", padding: "5px" }}>
                     <Typography variant="body1" fontSize={24}>Filter by</Typography>
@@ -102,9 +130,13 @@ function CookiePage() {
                             </Select>
                         </FormControl>
                     </Box>
+                    {/* Main products display */}
+                    {(products === undefined || products.length == 0) ? 
+                    <NoProductsAvailable/> 
+                    : 
                     <Box sx={{ display: "flex", justifyContent: "start", columnGap: "30px", rowGap:"30px", marginLeft: "20px", flexWrap: "wrap" }}>
-                        {products.map((data, index) => <ProductCard key={index} props={data}/>)}
-                    </Box>
+                        {products.map((data, index) => <ProductCard key={index} productId={data.id} imageName={data.imageName} productName={data.productName} productInfo={data.productInfo} price={data.price} addToCart={addToCart}/>)}
+                    </Box>}
                 </Box>
 
             </Box>

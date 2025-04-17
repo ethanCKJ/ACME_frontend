@@ -5,38 +5,33 @@ import IndeterminateCheckBoxOutlinedIcon from '@mui/icons-material/Indeterminate
 interface ProductCardProps {
     productId: number,
     imageName: string,
-    addToCart: (productId: number, quantity: number) => void,
+    addToCart: (productId:number, productName: string, quantity: number, price:number) => void,
     productName: string,
     productInfo: string,
     price: number,
 }
-// function ProductModal(){
 
-// }
-function ProductCard(props: ProductCardProps) {
-    const {productId, imageName, addToCart, productName, productInfo, price} = props.props;
-    console.log(props)
-    console.log(productName)
-    console.log(imageName)
+function ProductCard({productId, imageName, addToCart, productName, productInfo, price}: ProductCardProps) {
+    
     const [open, setOpen] = useState<boolean>(false);
     // Why make a separate function with arguments when you can just use the local variables?
     const ProductModal = () => {
         const handleQuantityIncrement = (event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault()
-            setQuantity(quantity+1)
+            setQuantity(quantityState+1)
         }
         const handleQuantityDecrement = (event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault()
-            setQuantity(Math.max(1,quantity-1))
+            setQuantity(Math.max(1,quantityState-1))
         }
-        const [quantity, setQuantity] = useState<number>(1);
+        const [quantityState, setQuantity] = useState<number>(1);
         const theme = useTheme();
+        let quantity = 5;
         return(
             <Dialog
             open={open}
             onClose={() => setOpen(false)}
             >
-                
                 <Box sx={{width:"450px", m:0, p:0}}>
                     <img
                     src={`/images/cookies/${imageName}.webp`}
@@ -49,27 +44,23 @@ function ProductCard(props: ProductCardProps) {
                         <Typography variant="body1" fontSize={"18px"}>{productName}</Typography>
                         {/* Default Typography is already body1 */}
                         <Typography>{productInfo}</Typography>
-                        <Typography>{`Price \$${price} per cookie`}</Typography>
+                        <Typography>{`Price \$${price} per unit`}</Typography>
                         <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center", padding: "0px 5px"}}>
                             <Typography>Quantity</Typography>
-                            <Box sx={{display:"flex"}}>
-                                <IconButton onClick={handleQuantityIncrement} color='primary' >
-                                    <AddBoxOutlinedIcon/>
-                                </IconButton>
-                                <Box sx={{width:"70px",height:"30px", margin:"3px 0px", padding:0, border: `2px solid ${theme.palette.primary.main}`, display:"flex", justifyContent:"center", alignItems:"center"}}><Typography>{quantity}</Typography></Box>
+                            <Box sx={{display:"flex", marginRight:"80px"}}>
                                 <IconButton onClick={handleQuantityDecrement} color='primary'>
                                     <IndeterminateCheckBoxOutlinedIcon/>
                                 </IconButton>
+                                <Box sx={{width:"70px",height:"30px", margin:"3px 0px", padding:0, border: `2px solid ${theme.palette.primary.main}`, display:"flex", justifyContent:"center", alignItems:"center"}}><Typography>{quantityState}</Typography></Box>
+                                <IconButton onClick={handleQuantityIncrement} color='primary' >
+                                    <AddBoxOutlinedIcon/>
+                                </IconButton>
                             </Box>
-                            <Button variant="outlined" >
-                                Add to shopping cart
+                            <Button variant="outlined" onClick={()=>addToCart(productId, productName,quantityState,price)}>
+                                Add to cart
                             </Button>
                         </Box>
-                        
-                        
                     </Box>
-
-
                 </Box>
             </Dialog>
         )
