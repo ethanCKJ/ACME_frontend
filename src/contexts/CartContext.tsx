@@ -77,6 +77,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         })
         if (deleteItem){
             newCartContent.splice(targetIndex, 1)
+            setCartCount(cartCount => cartCount-=1)
         }
         setCartContent(newCartContent)
     }
