@@ -4,7 +4,6 @@ import api from '../components/api'
 import Header from '../components/Header'
 import ProductCard from '../components/ProductCard'
 import ShoppingCartPanel from '../components/ShoppingCartPanel'
-import { cartObj } from '../App'
 import { useCart } from '../contexts/CartContext'
 
 const sortOrderOptions = ["Popularity", "Price high to low", "Price low to high", "A to Z", "Z to A",]
@@ -19,10 +18,8 @@ function CookiePage() {
     const maxPrice = 100
     const minPrice = 0
     const [products, setProducts] = useState<object[]>([])
-    // const [cartCount, setCartCount] = useState<number>(0)
-    // const [cartContent, setCartContent] = useState<cartObj[]>([])
     const theme = useTheme();
-    const {cartCount, addToCart} = useCart();
+    const { addToCart } = useCart();
 
     const getProducts = async (category: string) => {
         try {
@@ -69,27 +66,9 @@ function CookiePage() {
             </Box>)
     }
 
-    // const addToCart = (productId: number, productName: string, quantity: number, price: number, imageName: string) => {
-    //     let updated = false;
-    //     const newCartContent = cartContent.map((item) => {
-    //         if (item.productId === productId) {
-    //             // shallow copy only one item. shallow copying is sufficient given cartObj is made of primitives.
-    //             let newItem = { ...item }
-    //             newItem.quantity += quantity;
-    //             updated = true;
-    //             return newItem;
-    //         }
-    //         return item;
-    //     })
-    //     if (!updated) {
-    //         newCartContent.push({ productId: productId, productName: productName, quantity: quantity, price: price, imageName: imageName })
-    //         setCartCount(cartCount => cartCount+=1);
-    //     }
-    //     setCartContent(newCartContent)
-    // }
     return (
         <>
-            <Header cartCount={cartCount} />
+            <Header />
             <Box sx={{ display: "flex", width: "100%", minHeight: "800px", padding: "0px 20px", background: "beige", }}>
                 {/* Filter panel */}
                 <Box sx={{ minWidth: "200px", padding: "5px" }}>
@@ -114,9 +93,9 @@ function CookiePage() {
                     {/* Header bar */}
                     <Box sx={{ display: "flex", alignItems: 'center' }}>
                         <Typography variant="h3" align='center' flexGrow={1}>Cookies</Typography>
-                        <FormControl sx={{m: 1, padding:"0" }}>
+                        <FormControl sx={{ m: 1, padding: "0" }}>
                             <Select
-                                sx={{width:"170px", '& .MuiSelect-select':{paddingLeft: "10px", paddingRight:"0px", textAlign:"center"}}}
+                                sx={{ width: "170px", '& .MuiSelect-select': { paddingLeft: "10px", paddingRight: "0px", textAlign: "center" } }}
                                 value={sortOrder}
                                 onChange={handleSortOrderChange}
                                 defaultValue={sortOrderOptions[0]}
@@ -139,7 +118,7 @@ function CookiePage() {
 
                     }
                 </Box>
-                <ShoppingCartPanel/>
+                <ShoppingCartPanel />
 
             </Box>
         </>

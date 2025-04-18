@@ -5,6 +5,7 @@ import PromoCarousel from '../components/PromoCarousel'
 import HomeCard from '../components/HomeCard'
 import Footer from '../components/Footer'
 
+
 function Home() {
 
   const data = [
@@ -36,12 +37,10 @@ function Home() {
       imgName: "eggTart_square",
       href: "/special_bread"
     },
-
-
   ]
   return (
     <>
-      <Header />
+      <Header/>
       <PromoCarousel />
       <Typography align='center' variant="h4" marginTop={"20px"}>What we offer</Typography>
       <Box sx={{ display: "flex", width: "100%", justifyContent: "center", flexWrap: "wrap" }}>

@@ -25,20 +25,22 @@ function App() {
   const theme = useMemo(() => {
     return createTheme(themeOptions)
   }, [])
+
+  console.log("App rendered")
   
 
   return (
+    <CartProvider>
     <BrowserRouter>
       <CssBaseline/>
-      <CartProvider>
         <ThemeProvider theme={theme}>
           <Routes>
             <Route path="/" element={<Home/>} />
             <Route path="/cookie" element={<CookiePage/>}/>
           </Routes>
         </ThemeProvider>
-      </CartProvider>
       </BrowserRouter>
+      </CartProvider>
   )
 }
 

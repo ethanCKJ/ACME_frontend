@@ -1,5 +1,5 @@
 import { SliderValueLabel } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { createContext, useContext, useState, ReactNode } from "react";
 
 export type cartObj = {
@@ -25,9 +25,23 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // 3. Implementing the const items provided by the context in ContextProvider
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-    const [cartCount, setCartCount] = useState<number>(0)
-    const [cartContent, setCartContent] = useState<cartObj[]>([])
-    const addToCart = (product:cartObj) => {
+    const [cartCount, setCartCount] = useState<number>(() => {
+        const storedCount = localStorage.getItem("cartCount")
+        if (storedCount) {
+            return JSON.parse(storedCount)
+        }
+        return 0
+    })
+
+    const [cartContent, setCartContent] = useState<cartObj[]>(() => {
+        const storedContent = localStorage.getItem("cartContent")
+        if (storedContent) {
+            return JSON.parse(storedContent)
+        }
+        return []
+    })
+
+    const addToCart = (product: cartObj) => {
         let updatedExisting = false
         let indexToDelete = -1
         const newCartContent = cartContent.map((item, index) => {
@@ -50,13 +64,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             }
         }
         else {
-            if (product.quantity > 0){
+            if (product.quantity > 0) {
                 newCartContent.push({ productId: product.productId, productName: product.productName, quantity: product.quantity, price: product.price, imageName: product.imageName })
                 setCartCount(cartCount => cartCount += 1);
             }
         }
         setCartContent(newCartContent)
     }
+
     /**
      * Given index of a product in the shopping cart, adjust the quantity of the product and remove if necessary
      * @param targetIndex 
@@ -65,33 +80,42 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const adjustQuantity = (targetIndex: number, newQuantity: number) => {
         let deleteItem = false;
         const newCartContent = cartContent.map((value, index) => {
-            if (index === targetIndex){
-                let newItem = {...value}
+            if (index === targetIndex) {
+                let newItem = { ...value }
                 newItem.quantity = newQuantity
-                if (newItem.quantity <= 0){
+                if (newItem.quantity <= 0) {
                     deleteItem = true;
                 }
                 return newItem
             }
             return value
         })
-        if (deleteItem){
+        if (deleteItem) {
             newCartContent.splice(targetIndex, 1)
-            setCartCount(cartCount => cartCount-=1)
+            setCartCount(cartCount => cartCount -= 1)
         }
         setCartContent(newCartContent)
     }
+
+    // write back changes to state in RAM to localStorage
+    useEffect(() => {
+        localStorage.setItem("cartContent", JSON.stringify(cartContent))
+    }, [cartContent])
+
+    useEffect(() => {
+        localStorage.setItem("cartCount", JSON.stringify(cartCount))
+    }, [cartCount])
     // 4. Putting the Implemented consts in value then wrapping the child.
     return (
         <CartContext.Provider
-        value = {{
-            cartCount,
-            setCartCount,
-            cartContent,
-            setCartContent,
-            addToCart,
-            adjustQuantity
-        }}
+            value={{
+                cartCount,
+                setCartCount,
+                cartContent,
+                setCartContent,
+                addToCart,
+                adjustQuantity
+            }}
         >
             {children}
         </CartContext.Provider>

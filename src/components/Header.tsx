@@ -2,11 +2,10 @@ import { AppBar, Box, ButtonGroup, Toolbar, Button, Typography } from '@mui/mate
 import React from 'react'
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import { useCart } from '../contexts/CartContext';
 
-interface HeaderProps {
-    cartCount: number;
-}
-function Header({cartCount}: HeaderProps) {
+function Header() {
+    const {cartCount} = useCart()
     const buttonInfo =[
         {href: "/about", body: "About us", width:"80px"},
         {href: "/cookie", body: "Cookies"},
