@@ -14,11 +14,11 @@ function QuantityInput({setQuantity, quantity}: QuantityInputProps) {
     }
     const handleQuantityDecrement = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault()
-        setQuantity(Math.max(1,quantity-1))
+        setQuantity(Math.max(0,quantity-1))
     }
     const theme = useTheme();
     return (
-        <Box sx={{display:"flex", marginRight:"80px", alignItems:"center"}}>
+        <Box sx={{display:"flex", marginRight:"0px", alignItems:"center"}}>
             <IconButton onClick={handleQuantityDecrement} color='primary'>
                 <IndeterminateCheckBoxOutlinedIcon/>
             </IconButton>

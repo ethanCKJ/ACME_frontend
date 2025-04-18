@@ -1,21 +1,13 @@
-import React, { useEffect } from 'react'
+import { Box, FormControl, MenuItem, Select, Slider, TextField, Typography, useTheme } from '@mui/material'
+import { useEffect, useState } from 'react'
 import api from '../components/api'
 import Header from '../components/Header'
-import { Box, Grid2, Slider, Typography, Input, TextField, FormControl, MenuItem, Select, Modal, useTheme } from '@mui/material'
-import { useState } from 'react'
 import ProductCard from '../components/ProductCard'
 import ShoppingCartPanel from '../components/ShoppingCartPanel'
+import { cartObj } from '../App'
+import { useCart } from '../contexts/CartContext'
 
 const sortOrderOptions = ["Popularity", "Price high to low", "Price low to high", "A to Z", "Z to A",]
-export type cartObj = {
-    productId: number,
-    productName: string,
-    imageName: string,
-    quantity: number,
-    price: number
-}
-
-
 function CookiePage() {
     // define min and max price values - have defaults
     const [priceRange, setPriceRange] = useState<number[]>([0, 100])
@@ -27,26 +19,27 @@ function CookiePage() {
     const maxPrice = 100
     const minPrice = 0
     const [products, setProducts] = useState<object[]>([])
-    const [cartCount, setCartCount] = useState<number>(0)
-    const [cartContent, setCartContent] = useState<cartObj[]>([])
+    // const [cartCount, setCartCount] = useState<number>(0)
+    // const [cartContent, setCartContent] = useState<cartObj[]>([])
     const theme = useTheme();
+    const {cartCount, addToCart} = useCart();
 
-    const getProducts = async(category: string) =>{
+    const getProducts = async (category: string) => {
         try {
             const res = await api.get(`/products/${category}?minPrice=${minPrice}&maxPrice=${maxPrice}`)
-            if (res.status === 200){
+            if (res.status === 200) {
                 setProducts(res.data)
             }
-            else{
+            else {
                 console.log("Error in response")
                 console.log(res)
             }
         }
-        catch (error){
+        catch (error) {
             console.log(error)
         }
     }
-    useEffect(() => {getProducts("cookie")}, [])
+    useEffect(() => { getProducts("cookie") }, [])
 
     const handleSliderUpdate = (event: Event, newPriceRange: (number | string)[]) => {
         let min = priceRange[0]
@@ -62,48 +55,41 @@ function CookiePage() {
     const handleSortOrderChange = (event: Event) => {
         let newOrder = event.target.value;
         if (newOrder !== null && newOrder !== sortOrder) {
-            console.log(products)
+            setSortOrder(newOrder)
             // sort the data
         }
     }
-    
-    const NoProductsAvailable = () =>{
-        console.log("No products")
-        return(
-            <Box sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-                <Box sx={{display:"flex",justifyContent:"center", alignItems:"center", width:"800px", height:"200px", border: `5px solid ${theme.palette.primary.light}`, borderRadius: "10px"}}>
+
+    const NoProductsAvailable = () => {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "800px", height: "200px", border: `5px solid ${theme.palette.primary.light}`, borderRadius: "10px" }}>
                     <Typography variant="h4">No products match your filter</Typography>
                 </Box>
             </Box>)
     }
-    
-    const addToCart = (productId:number, productName: string, quantity: number, price:number, imageName: string) =>{
-        console.log("Add to cart ", quantity)
-        let updated = false;
-        const newCartContent = cartContent.map((item) => {
-            if (item.productId === productId){
-                // Clone item
-                let newItem = {...item}
-                newItem.quantity += quantity;
-                updated = true;
-                return newItem;
-            }
-            // We return the original
-            return item;
-        })
-        // Add new product to cart
-        // const newContent: cartObj = {productId: productId, productName: productName, quantity:quantity, price: price}
-        if (!updated){
-            newCartContent.push({productId: productId, productName: productName, quantity:quantity, price:price, imageName: imageName})
-        }
-        setCartContent(newCartContent)
-    }
-    // create a slider
-    // have value be changes
-    // use min and max in client-side filtering
+
+    // const addToCart = (productId: number, productName: string, quantity: number, price: number, imageName: string) => {
+    //     let updated = false;
+    //     const newCartContent = cartContent.map((item) => {
+    //         if (item.productId === productId) {
+    //             // shallow copy only one item. shallow copying is sufficient given cartObj is made of primitives.
+    //             let newItem = { ...item }
+    //             newItem.quantity += quantity;
+    //             updated = true;
+    //             return newItem;
+    //         }
+    //         return item;
+    //     })
+    //     if (!updated) {
+    //         newCartContent.push({ productId: productId, productName: productName, quantity: quantity, price: price, imageName: imageName })
+    //         setCartCount(cartCount => cartCount+=1);
+    //     }
+    //     setCartContent(newCartContent)
+    // }
     return (
         <>
-            <Header  cartCount={cartCount}/>
+            <Header cartCount={cartCount} />
             <Box sx={{ display: "flex", width: "100%", minHeight: "800px", padding: "0px 20px", background: "beige", }}>
                 {/* Filter panel */}
                 <Box sx={{ minWidth: "200px", padding: "5px" }}>
@@ -125,12 +111,12 @@ function CookiePage() {
                     </Box>
                 </Box>
                 <Box sx={{ flexGrow: 1 }}>
-                    {/* You need a display:"flex" parent to put components side by side. flexGrow=1 means I take up the maximum free space in a side-by-side context */}
-                    {/* This box is the header bar */}
+                    {/* Header bar */}
                     <Box sx={{ display: "flex", alignItems: 'center' }}>
                         <Typography variant="h3" align='center' flexGrow={1}>Cookies</Typography>
-                        <FormControl sx={{ minWidth: "120px", m: 1 }}>
+                        <FormControl sx={{m: 1, padding:"0" }}>
                             <Select
+                                sx={{width:"170px", '& .MuiSelect-select':{paddingLeft: "10px", paddingRight:"0px", textAlign:"center"}}}
                                 value={sortOrder}
                                 onChange={handleSortOrderChange}
                                 defaultValue={sortOrderOptions[0]}
@@ -144,16 +130,16 @@ function CookiePage() {
                         </FormControl>
                     </Box>
                     {/* Main products display */}
-                    {(products === undefined || products.length == 0) ? 
-                    <NoProductsAvailable/> 
-                    : 
-                    <Box sx={{ display: "flex", justifyContent: "start", columnGap: "30px", rowGap:"30px", marginLeft: "20px", flexWrap: "wrap" }}>
-                        {products.map((data, index) => <ProductCard key={index} productId={data.id} imageName={data.imageName} productName={data.productName} productInfo={data.productInfo} price={data.price} addToCart={addToCart}/>)}
-                    </Box>
-                    
+                    {(products === undefined || products.length == 0) ?
+                        <NoProductsAvailable />
+                        :
+                        <Box sx={{ display: "flex", justifyContent: "start", columnGap: "30px", rowGap: "30px", marginLeft: "20px", flexWrap: "wrap" }}>
+                            {products.map((data, index) => <ProductCard key={index} productId={data.id} imageName={data.imageName} productName={data.productName} productInfo={data.productInfo} price={data.price} addToCart={addToCart} />)}
+                        </Box>
+
                     }
                 </Box>
-                <ShoppingCartPanel cartContent={cartContent} setCartContent={setCartContent}/>
+                <ShoppingCartPanel/>
 
             </Box>
         </>

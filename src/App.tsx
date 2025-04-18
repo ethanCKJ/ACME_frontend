@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import CookiePage from './pages/CookiePage'
 import { CssBaseline } from '@mui/material'
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { useMemo } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import CookiePage from './pages/CookiePage'
+import Home from './pages/Home'
 import { themeOptions } from './theme'
+import { CartProvider } from './contexts/CartContext'
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -29,12 +30,14 @@ function App() {
   return (
     <BrowserRouter>
       <CssBaseline/>
-      <ThemeProvider theme={theme}>
-        <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path="/cookie" element={<CookiePage/>}/>
-        </Routes>
-      </ThemeProvider>
+      <CartProvider>
+        <ThemeProvider theme={theme}>
+          <Routes>
+            <Route path="/" element={<Home/>} />
+            <Route path="/cookie" element={<CookiePage/>}/>
+          </Routes>
+        </ThemeProvider>
+      </CartProvider>
       </BrowserRouter>
   )
 }
