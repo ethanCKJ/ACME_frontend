@@ -40,13 +40,15 @@ function Home() {
   ]
   return (
     <>
+    <Box sx={{backgroundColor: "beige"}}>
       <Header/>
       <PromoCarousel />
       <Typography align='center' variant="h4" marginTop={"20px"}>What we offer</Typography>
-      <Box sx={{ display: "flex", width: "100%", justifyContent: "center", flexWrap: "wrap" }}>
+      <Box sx={{ display: "flex", width: "100%", justifyContent: "center", flexWrap: "wrap"}}>
         {data.map(({ title, body, buttonText, imgName, href }) => <HomeCard key={title} title={title} body={body} buttonText={buttonText} imgName={imgName} href={href} />)}
       </Box>
-      <Footer />
+    </Box>
+    <Footer />
     </>
   )
 }

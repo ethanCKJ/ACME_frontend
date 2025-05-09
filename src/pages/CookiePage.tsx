@@ -69,7 +69,7 @@ function CookiePage() {
     return (
         <>
             <Header />
-            <Box sx={{ display: "flex", width: "100%", minHeight: "800px", padding: "0px 20px", background: "beige", }}>
+            <Box sx={{ display: "flex", width: "100%", minHeight: "100%", padding: "0px 20px", background: "beige"}}>
                 {/* Filter panel */}
                 <Box sx={{ minWidth: "200px", padding: "5px" }}>
                     <Typography variant="body1" fontSize={24}>Filter by</Typography>

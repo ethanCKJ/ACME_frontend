@@ -97,7 +97,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setCartContent(newCartContent)
     }
 
-    // write back changes to state in RAM to localStorage
+    // write back in application state to localStorage
     useEffect(() => {
         localStorage.setItem("cartContent", JSON.stringify(cartContent))
     }, [cartContent])

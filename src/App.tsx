@@ -3,6 +3,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useMemo } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import CookiePage from './pages/CookiePage'
+import CartPage from './pages/CartPage'
 import Home from './pages/Home'
 import { themeOptions } from './theme'
 import { CartProvider } from './contexts/CartContext'
@@ -37,6 +38,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home/>} />
             <Route path="/cookie" element={<CookiePage/>}/>
+            <Route path="/cart" element={<CartPage/>}/>
           </Routes>
         </ThemeProvider>
       </BrowserRouter>
