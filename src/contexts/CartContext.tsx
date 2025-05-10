@@ -1,6 +1,7 @@
 import { SliderValueLabel } from "@mui/material";
 import React, { useEffect } from "react";
 import { createContext, useContext, useState, ReactNode } from "react";
+import { STANDARD_DELIVERY_FEE } from "../components/constants";
 
 export type cartObj = {
     productId: number
@@ -48,7 +49,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (storedContent){
             return JSON.parse(storedContent)
         }
-        return 0;
+        return STANDARD_DELIVERY_FEE;
     })
 
     const addToCart = (product: cartObj) => {
@@ -116,6 +117,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         localStorage.setItem("cartCount", JSON.stringify(cartCount))
     }, [cartCount])
+
+    useEffect(() => {
+        localStorage.setItem("deliveryFee", JSON.stringify(deliveryFee))
+    }, [deliveryFee])
     // 4. Putting the Implemented consts in value then wrapping the child.
     return (
         <CartContext.Provider

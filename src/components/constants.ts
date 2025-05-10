@@ -1,0 +1,2 @@
+export const STANDARD_DELIVERY_FEE = 100;
+export const EXPRESS_DELIVERY_FEE = 300;

@@ -4,6 +4,7 @@ import { Box, TableContainer, Typography, Table, TableHead, TableRow, TableBody,
 import { cartObj, useCart } from '../contexts/CartContext'
 import QuantityInput from '../components/QuantityInput'
 import { centsToDollar, dollarToCents } from '../components/cent2Dollar'
+import { EXPRESS_DELIVERY_FEE, STANDARD_DELIVERY_FEE } from '../components/constants'
 interface ColHeaderProps {
   width: number,
   text: string,
@@ -20,8 +21,6 @@ interface FormattedRowProps {
 
 function CartPage() {
   const {addToCart, cartContent, adjustQuantity, setDeliveryFee, deliveryFee} = useCart();
-  const standardFee = 100;
-  const expressFee = 300;
   const tableWidth=700
   const col2Width=150;
   const col3Width=100;
@@ -75,16 +74,16 @@ function CartPage() {
             Delivery:
             <FormControl>
               <RadioGroup onChange={(e) => {
-                if (parseInt(e.target.value) === standardFee){
-                  setDeliveryFee(standardFee);
+                if (parseInt(e.target.value) === STANDARD_DELIVERY_FEE){
+                  setDeliveryFee(STANDARD_DELIVERY_FEE);
                 }
                 else{
-                  setDeliveryFee(expressFee);
+                  setDeliveryFee(EXPRESS_DELIVERY_FEE);
                 }
-              }} value={deliveryFee} >
+              }} value={deliveryFee}>
                 {/* Problem here is selection (value of RadioGroup) is not tied to deliveryFee state to need to double click */}
-                <FormControlLabel value={standardFee} control={<Radio/>} label="standard ($1)" labelPlacement='end'/>
-                <FormControlLabel value={expressFee} control={<Radio/>} label="express ($3)" labelPlacement='end'/>
+                <FormControlLabel value={STANDARD_DELIVERY_FEE} control={<Radio/>} label={`standard $${centsToDollar(STANDARD_DELIVERY_FEE)}`} labelPlacement='end'/>
+                <FormControlLabel value={EXPRESS_DELIVERY_FEE} control={<Radio/>} label={`express $${centsToDollar(EXPRESS_DELIVERY_FEE)}`} labelPlacement='end'/>
               </RadioGroup>
             </FormControl>
           </Grid2>
