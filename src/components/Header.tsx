@@ -25,7 +25,7 @@ function Header() {
                     {buttonInfo.map(({href, body, width}, idx) => (<Button key={idx} variant="text" color="inherit" sx={{height:"60px", fontSize: "18px", width:{width}, textAlign:"center", lineHeight:"20px"}} href={href}>{body}</Button>))}
                 </Box>
                 <ButtonGroup>
-                    <Button variant="outlined" color="inherit" sx={{width:"135px", justifyContent:"space-between", padding: "0px 5px 0px 5px", display:"flex"}}>
+                    <Button variant="outlined" color="inherit" sx={{width:"135px", justifyContent:"space-between", padding: "0px 5px 0px 5px", display:"flex"}} href={(cartCount > 0 ? "/cart" : "")}>
                         <Typography variant="h5" textAlign={"center"} flexGrow={1}>{cartCount}</Typography>
                         <Box sx={{width:"80px", fontSize:"14px", padding:"0px", alignItems:"start", display:"flex", flexDirection:"column"}}>
                          <Typography>My Cart</Typography>

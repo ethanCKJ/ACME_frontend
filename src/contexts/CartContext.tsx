@@ -18,6 +18,8 @@ type CartContextType = {
     setCartContent: React.Dispatch<React.SetStateAction<cartObj[]>>;
     addToCart: (product: cartObj) => void;
     adjustQuantity: (index: number, newQuantity: number) => void;
+    deliveryFee: number;
+    setDeliveryFee: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // 2. createContext call
@@ -41,6 +43,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         return []
     })
 
+    const [deliveryFee, setDeliveryFee] = useState<number>(() => {
+        const storedContent = localStorage.getItem("deliveryFee")
+        if (storedContent){
+            return JSON.parse(storedContent)
+        }
+        return 0;
+    })
+
     const addToCart = (product: cartObj) => {
         let updatedExisting = false
         let indexToDelete = -1
@@ -50,6 +60,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 let newItem = { ...item }
                 newItem.quantity += product.quantity;
                 if (newItem.quantity <= 0) {
+                    console.log("This should not be possible")
                     indexToDelete = index;
                 }
                 updatedExisting = true;
@@ -114,7 +125,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 cartContent,
                 setCartContent,
                 addToCart,
-                adjustQuantity
+                adjustQuantity,
+                deliveryFee,
+                setDeliveryFee,
             }}
         >
             {children}

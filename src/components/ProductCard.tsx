@@ -2,6 +2,7 @@ import { Box, Button, Card, CardContent, CardMedia, Dialog, Typography, useTheme
 import React, { useState } from 'react';
 import QuantityInput from './QuantityInput';
 import { cartObj, useCart } from '../contexts/CartContext';
+import { centsToDollar } from './cent2Dollar';
 interface ProductCardProps {
     productId: number,
     imageName: string,
@@ -10,7 +11,7 @@ interface ProductCardProps {
     price: number,
 }
 
-function ProductCard({ productId, imageName, productName, productInfo, price }: ProductCardProps) {
+function ProductCard({ productId, imageName, productName, productInfo, price}: ProductCardProps) {
     const {addToCart} = useCart();
     const [open, setOpen] = useState<boolean>(false);
     // Why make a separate function with arguments when you can just use the local variables?
@@ -42,7 +43,7 @@ function ProductCard({ productId, imageName, productName, productInfo, price }: 
                     <Box sx={{ padding: "5px 0px 10px 10px" }}>
                         <Typography fontSize={"18px"}>{productName}</Typography>
                         <Typography>{productInfo}</Typography>
-                        <Typography>{`Price \$${price} per unit`}</Typography>
+                        <Typography>{`Price \$${centsToDollar(price)} per unit`}</Typography>
                         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0px 5px" }}>
                             <Typography>Quantity</Typography>
                             <QuantityInput quantity={quantity} setQuantity={setQuantity} />
@@ -72,7 +73,7 @@ function ProductCard({ productId, imageName, productName, productInfo, price }: 
                 <CardContent sx={{ padding: "0px 5px", m: 0 }}>
                     <Typography variant="h6">{productName}</Typography>
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Typography fontSize={16} flexGrow={1}>{`Price: \$${price}`}</Typography>
+                        <Typography fontSize={16} flexGrow={1}>{`Price: \$${centsToDollar(price)}`}</Typography>
                         <Button variant="text" onClick={() => setOpen(true)}>Add to cart</Button>
                     </Box>
                 </CardContent>
