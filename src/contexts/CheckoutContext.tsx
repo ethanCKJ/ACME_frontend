@@ -1,6 +1,15 @@
 import React, { createContext, ReactNode, useState, SetStateAction, useEffect, useContext } from "react";
 
 // 1. Content provided by the context
+export interface CheckoutData {
+    name: string,
+    email: string,
+    addressLine1: string,
+    addressLine2: string,
+    addressLine3: string,
+    postcode: string,
+}
+
 interface CheckoutContextInterface {
     name: string,
     setName: React.Dispatch<SetStateAction<string>>,
@@ -36,11 +45,11 @@ function useLocalStorageState<T>(key: string, defaultValue: T){
 // 3. export Provider component
 export const CheckoutProvider = ({children} : {children : ReactNode}) => {
     const [name, setName] = useLocalStorageState("name", "")
-    const [email, setEmail] = useLocalStorageState("name", "")
-    const [addressLine1, setAddressLine1] = useLocalStorageState("name", "")
-    const [addressLine2, setAddressLine2] = useLocalStorageState("name", "")
-    const [addressLine3, setAddressLine3] = useLocalStorageState("name", "")
-    const [postcode, setPostcode] = useLocalStorageState("name", "")
+    const [email, setEmail] = useLocalStorageState("email", "")
+    const [addressLine1, setAddressLine1] = useLocalStorageState("addressLine1", "")
+    const [addressLine2, setAddressLine2] = useLocalStorageState("addressLine2", "")
+    const [addressLine3, setAddressLine3] = useLocalStorageState("addressLine3", "")
+    const [postcode, setPostcode] = useLocalStorageState("postcode", "")
     return <CheckoutContext.Provider value={{
         name,
         setName,

@@ -1,12 +1,13 @@
 import React from 'react'
 import { useState } from 'react';
-import { Box, Typography, Button, Stepper, Step, StepLabel } from '@mui/material'
+import { Box, Typography, Button, Stepper, Step, StepLabel, Link } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LoginPanel from '../components/LoginPanel';
+import CheckoutForm from '../components/CheckoutForm';
 
 const steps = ["Login / Continue as guest", "Enter details", "Make payment"]
 function CheckoutPage() {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(1);
   const maxStep = 2;
   const handlePrevious = () => {
     if (activeStep > 0){
@@ -40,9 +41,12 @@ function CheckoutPage() {
             <Button variant='contained' disabled={activeStep === 0} onClick={handlePrevious}>Previous</Button>
             <Button variant='contained' disabled={activeStep === maxStep} onClick={handleNext}>Next</Button>
       </Box>
-      <Box sx={{display:"flex", justifyContent:"center", marginTop:"20px"}}>
-
-        {activeStep === 0 ? <LoginPanel/> : null}
+      <Box sx={{display:"flex", alignItems:"center", marginTop:"40px", flexDirection:"column", gap:1}}>
+        {activeStep === 0 ? <>
+        <LoginPanel/>
+        <Button variant='outlined' onClick={handleNext}>Checkout as guest</Button>
+        </> : null}
+        {activeStep === 1 ? <CheckoutForm handleNext={handleNext}/> : null}
       </Box>
     </Box>
     </Box>
