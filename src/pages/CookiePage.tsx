@@ -35,6 +35,7 @@ function CookiePage() {
         }
         catch (error) {
             console.log(error)
+
         }
     }
     useEffect(() => { getProducts("cookie") }, [])

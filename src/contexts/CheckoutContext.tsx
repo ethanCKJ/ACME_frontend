@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useState, SetStateAction, useEffect, useContext, useReducer } from "react";
+import React, { createContext, ReactNode, useContext, useEffect, useReducer } from "react";
 
 // 1. Content provided by the context
 export interface CheckoutData {

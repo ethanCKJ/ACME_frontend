@@ -1,7 +1,6 @@
+import { Box, Button, Card, Typography } from '@mui/material'
 import React from 'react'
-import { useState } from 'react'
-import { Card, Button, Typography, FormControl, FormLabel, Box, TextField } from '@mui/material'
-import { useCheckout, CheckoutData } from '../contexts/CheckoutContext'
+import { useCheckout } from '../../contexts/CheckoutContext'
 import { FormInfo, FormattedField } from './FormattedField'
 
 interface CheckoutFormProps {
@@ -65,7 +64,7 @@ function CheckoutForm({ handleNext }: CheckoutFormProps) {
   return (
     <Card variant='outlined' sx={{ width: "100%", padding: "10px 20px", display: "flex", flexDirection: "column", gap: 2 }}>
       <Typography textAlign={"center"} fontSize="32px" fontWeight="bold">Enter delivery details</Typography>
-      <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 2, "& .MuiFormLabel-root": { color: "black" } }} onSubmit={handleSubmit}>
+      <Box component="form" sx={{ display: "flex", flexDirection: "column", alignItems:"center",gap: 2, "& .MuiFormLabel-root": { color: "black" }}} onSubmit={handleSubmit}>
         {formInfo.map((value) => <FormattedField key={value.title}
           title={value.title}
           fieldKey={value.fieldKey}
@@ -75,7 +74,7 @@ function CheckoutForm({ handleNext }: CheckoutFormProps) {
           checkoutData={checkoutData}
           dispatch={dispatchCheckout}
         />)}
-        <Button type="submit">Next</Button>
+        <Button type="submit" variant='contained' sx={{width:"50%"}}>Next</Button>
       </Box>
     </Card>
   )

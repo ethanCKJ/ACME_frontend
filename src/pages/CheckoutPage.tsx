@@ -2,13 +2,14 @@ import React from 'react'
 import { useState } from 'react';
 import { Box, Typography, Button, Stepper, Step, StepLabel, Link } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import LoginPanel from '../components/LoginPanel';
-import CheckoutForm from '../components/CheckoutForm';
+import LoginPanel from '../components/checkout/LoginPanel';
+import CheckoutForm from '../components/checkout/CheckoutForm';
+import CardForm from '../components/checkout/CardForm';
 
-const steps = ["Login / Continue as guest", "Enter details", "Make payment"]
+const steps = ["Login / Continue as guest", "Enter details", "Make payment", "Confirmation"]
 function CheckoutPage() {
-  const [activeStep, setActiveStep] = useState(1);
-  const maxStep = 2;
+  const [activeStep, setActiveStep] = useState(2);
+  const maxStep = 3;
   const handlePrevious = () => {
     if (activeStep > 0){
       setActiveStep((prev) => prev - 1)
@@ -47,6 +48,7 @@ function CheckoutPage() {
         <Button variant='outlined' onClick={handleNext}>Checkout as guest</Button>
         </> : null}
         {activeStep === 1 ? <CheckoutForm handleNext={handleNext}/> : null}
+        {activeStep === 2 ? <CardForm/> : null}
       </Box>
     </Box>
     </Box>

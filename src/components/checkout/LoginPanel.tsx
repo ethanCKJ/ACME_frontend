@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Card, FormControl, FormLabel, Typography, TextField, Button, Link } from '@mui/material'
-import api from './api';
+import api from '../api';
 
 function LoginPanel() {
   const [emailError, setEmailError] = useState(false);
@@ -14,12 +14,17 @@ function LoginPanel() {
       setEmailError(true)
       return;
     }
-    const res = await api.post("/login", { email, password })
-    if (res.status === 200) {
-      console.log("Successful login")
+    try{
+      const res = await api.post("/login", { email, password })
+      if (res.status === 200) {
+        console.log("Successful login")
+      }
+      else {
+        setPasswordError(true);
+      }
     }
-    else {
-      setPasswordError(true);
+    catch (err){
+      console.log(err);
     }
   }
 
