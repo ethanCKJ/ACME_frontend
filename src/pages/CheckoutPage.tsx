@@ -26,6 +26,7 @@ function CheckoutPage() {
       <Button variant="contained" href="/cart" startIcon={<ArrowBackIcon/>} sx={{margin: "0px 0px 0px 0px", position:"absolute", left:"20px"}}>Back to basket</Button>
       <Typography sx={{color:"white", fontSize:"40px"}}>Secure checkout</Typography>
     </Box>
+    {/* Main body */}
     <Box sx={{display:"flex", justifyContent:"center"}}>
       {/* The stepper */}
       <Box sx={{padding:"20px", width:"600px", display:"flex", flexDirection:"column"}}>
@@ -39,7 +40,6 @@ function CheckoutPage() {
           </Stepper>
           <Box sx={{display:"flex", justifyContent:"space-between", marginTop:"10px", height:"30px"}}>
             <Button variant='contained' disabled={activeStep === 0} onClick={handlePrevious}>Previous</Button>
-            <Button variant='contained' disabled={activeStep === maxStep} onClick={handleNext}>Next</Button>
       </Box>
       <Box sx={{display:"flex", alignItems:"center", marginTop:"40px", flexDirection:"column", gap:1}}>
         {activeStep === 0 ? <>
