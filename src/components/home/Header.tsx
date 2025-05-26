@@ -2,7 +2,7 @@ import { AppBar, Box, ButtonGroup, Toolbar, Button, Typography } from '@mui/mate
 import React from 'react'
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import { useCart } from '../contexts/CartContext';
+import { useCart } from '../../contexts/CartContext';
 
 function Header() {
     const {cartCount} = useCart()

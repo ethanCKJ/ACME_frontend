@@ -8,7 +8,7 @@ import CardForm from '../components/checkout/CardForm';
 
 const steps = ["Login / Continue as guest", "Enter details", "Make payment", "Confirmation"]
 function CheckoutPage() {
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
   const maxStep = 3;
   const handlePrevious = () => {
     if (activeStep > 0){
@@ -48,7 +48,7 @@ function CheckoutPage() {
         <Button variant='outlined' onClick={handleNext}>Checkout as guest</Button>
         </> : null}
         {activeStep === 1 ? <CheckoutForm handleNext={handleNext}/> : null}
-        {activeStep === 2 ? <CardForm/> : null}
+        {activeStep === 2 ? <CardForm handleNext={handleNext}/> : null}
       </Box>
     </Box>
     </Box>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Typography, IconButton } from '@mui/material'
-import QuantityInput from './QuantityInput'
+import QuantityInput from './global/QuantityInput'
 import { useCart } from '../contexts/CartContext'
 
 

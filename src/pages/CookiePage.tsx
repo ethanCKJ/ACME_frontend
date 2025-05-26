@@ -1,7 +1,7 @@
 import { Box, FormControl, MenuItem, Select, Slider, TextField, Typography, useTheme } from '@mui/material'
 import { useEffect, useState } from 'react'
 import api from '../components/api'
-import Header from '../components/Header'
+import Header from '../components/home/Header'
 import ProductCard from '../components/ProductCard'
 import ShoppingCartPanel from '../components/ShoppingCartPanel'
 import { useCart } from '../contexts/CartContext'

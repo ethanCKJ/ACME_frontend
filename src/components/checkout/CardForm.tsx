@@ -34,11 +34,11 @@ function CardForm({ handleNext}: CardFormProps) {
         event.preventDefault();
         console.log(cardNum.length)
         if (cardNum.length === 8){
-            const packet = {
-                ...cartContent,
+            
+            let packet = {
+                "products": cartContent,
                 ...checkoutData
             }
-            console.log("away!")
             try{
                 const res = await api.post("/order", packet)
                 console.log(res)

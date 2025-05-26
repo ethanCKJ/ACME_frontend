@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardContent, CardMedia, Dialog, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import QuantityInput from './QuantityInput';
+import QuantityInput from './global/QuantityInput';
 import { cartObj, useCart } from '../contexts/CartContext';
 import { centsToDollar } from './cent2Dollar';
 interface ProductCardProps {

@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
-import Header from '../components/Header'
+import Header from '../components/home/Header'
 import { Box, TableContainer, Typography, Table, TableHead, TableRow, TableBody, TableCell, Divider, Grid2, FormControl, RadioGroup, FormControlLabel, Radio, Button} from '@mui/material'
 import { cartObj, useCart } from '../contexts/CartContext'
-import QuantityInput from '../components/QuantityInput'
+import QuantityInput from '../components/global/QuantityInput'
 import { centsToDollar, dollarToCents } from '../components/cent2Dollar'
 import { EXPRESS_DELIVERY_FEE, STANDARD_DELIVERY_FEE } from '../components/constants'
 interface ColHeaderProps {

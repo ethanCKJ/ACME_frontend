@@ -1,9 +1,9 @@
 import React from 'react'
-import Header from '../components/Header'
+import Header from '../components/home/Header'
 import { Box, Typography } from '@mui/material'
-import PromoCarousel from '../components/PromoCarousel'
-import HomeCard from '../components/HomeCard'
-import Footer from '../components/Footer'
+import PromoCarousel from '../components/home/PromoCarousel'
+import HomeCard from '../components/home/HomeCard'
+import Footer from '../components/home/Footer'
 
 
 function Home() {
