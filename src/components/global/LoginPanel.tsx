@@ -1,23 +1,26 @@
 import React, { useState } from 'react'
 import { Box, Card, FormControl, FormLabel, Typography, TextField, Button, Link } from '@mui/material'
-import api from '../api';
-
-function LoginPanel() {
-  const [emailError, setEmailError] = useState(false);
+import api from '../api.ts';
+import {TOKEN_KEY} from "../constants.ts";
+interface LoginPanelProps {
+  onSuccess?: () => void;
+}
+function LoginPanel({onSuccess} : LoginPanelProps) {
   const [passwordError, setPasswordError] = useState(false);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formdata = new FormData(event.currentTarget);
-    let email = formdata.get("email")?.valueOf()
-    let password = formdata.get("password")?.valueOf()
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setEmailError(true)
-      return;
-    }
+    const username = formdata.get("email")?.valueOf()
+    const password = formdata.get("password")?.valueOf()
+    console.log("Email ",username, "Password ", password)
     try{
-      const res = await api.post("/login", { email, password })
+      const res = await api.post("/token", { username, password })
       if (res.status === 200) {
+        localStorage.setItem(TOKEN_KEY, res.data)
         console.log("Successful login")
+        if (onSuccess) {
+          onSuccess();
+        }
       }
       else {
         setPasswordError(true);
@@ -25,6 +28,7 @@ function LoginPanel() {
     }
     catch (err){
       console.log(err);
+      setPasswordError(true);
     }
   }
 
@@ -44,8 +48,6 @@ function LoginPanel() {
             required
             autoFocus
             variant='outlined'
-            error={emailError}
-            helperText={emailError ? "Please enter a valid email" : ""}
             sx={{ '& .MuiInputBase-input': { padding: 1 } }} />
         </FormControl>
         <FormControl>
@@ -64,7 +66,7 @@ function LoginPanel() {
         </FormControl>
         <Button variant='contained' type="submit">Sign in</Button>
         <Typography>Don&apos;t have an account?{' '}
-          <Link href="/" color='info'>Sign up</Link>
+          <Link href="/public" color='info'>Sign up</Link>
         </Typography>
       </Box>
     </Card>

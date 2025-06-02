@@ -10,7 +10,7 @@ interface CheckoutFormProps {
 const formInfo: FormInfo[] = [
   {
     title: "Name (required)",
-    fieldKey: "name",
+    fieldKey: "customerName",
     fieldType: "text",
     required: true,
     autocomplete: "name"
@@ -21,6 +21,13 @@ const formInfo: FormInfo[] = [
     fieldType: "email",
     required: true,
     autocomplete: "email"
+  },
+  {
+    title: "Phone (required)",
+    fieldKey: "phone",
+    fieldType: "text",
+    required: true,
+    autocomplete: ""
   },
   {
     title: "Address Line 1 (required)",
@@ -42,6 +49,13 @@ const formInfo: FormInfo[] = [
     fieldType: "text",
     required: false,
     autocomplete: "address-line3"
+  },
+  {
+    title: "City (required)",
+    fieldKey: "city",
+    fieldType: "text",
+    required: true,
+    autocomplete: "city"
   },
   {
     title: "Postcode (required)",

@@ -2,21 +2,27 @@ import React, { createContext, ReactNode, useContext, useEffect, useReducer } fr
 
 // 1. Content provided by the context
 export interface CheckoutData {
-  name: string;
+  customerId: number | null;
+  customerName: string;
   email: string;
   addressLine1: string;
   addressLine2: string;
   addressLine3: string;
   postcode: string;
+  city: string;
+  phone: string;
 }
 
 const defaultCheckoutData = {
-  name: "",
+  customerId: null,
+  customerName: "",
   email: "",
   addressLine1: "",
   addressLine2: "",
   addressLine3: "",
   postcode: "",
+  city: "",
+  phone:""
 }
 
 export type Action = { type: "set"; key: string; value: string; } | { type: "reset" }

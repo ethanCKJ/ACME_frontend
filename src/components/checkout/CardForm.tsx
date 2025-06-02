@@ -3,9 +3,11 @@ import { Card, Box, Typography, Button, TextField, FormControl, MenuItem } from 
 import { cartObj, useCart } from '../../contexts/CartContext';
 import { useCheckout } from '../../contexts/CheckoutContext';
 import api from '../api';
-
+import { PREMIUM_DELIVERY_FEE, STANDARD_DELIVERY_FEE } from '../constants';
+import {successMsg} from "../../pages/CheckoutPage.tsx";
 interface CardFormProps {
     handleNext: () => void
+    setSuccessMsg: React.Dispatch<React.SetStateAction<successMsg>>,
 }
 
 const months = [1,2,3,4,5,6,7,8,9,10,11,12];
@@ -20,30 +22,44 @@ const years = [
 ]
 
 const reg = new RegExp("^\\d*$")
-function validCardNumber(cardNum: string) : boolean {
-    return reg.test(cardNum);
-}
-function CardForm({ handleNext}: CardFormProps) {
+
+function CardForm({handleNext, setSuccessMsg}: CardFormProps) {
     const [cardNum, setCardNum] = useState("");
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
-    const {cartContent} = useCart();
-    const {checkoutData} = useCheckout();
+    const {cartContent, deliveryFee, setCartContent, setDeliveryFee, setCartCount} = useCart();
+    const {checkoutData, dispatchCheckout} = useCheckout();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         console.log("submit card")
         event.preventDefault();
-        console.log(cardNum.length)
         if (cardNum.length === 8){
-            
-            let packet = {
-                "products": cartContent,
+            let deliveryFreeStr = "STANDARD";
+            if (deliveryFee == PREMIUM_DELIVERY_FEE){
+                deliveryFreeStr = "PREMIUM"
+            }
+            const packet = {
+                "orderDetails": [] as object[],
+                "shipping": deliveryFreeStr,
                 ...checkoutData
             }
+            
+            console.log(packet)
+            cartContent.forEach((cartObj: cartObj) => {
+                const {productId, quantity} = cartObj;
+                packet.orderDetails.push({productId, quantity});
+            })
             try{
                 const res = await api.post("/order", packet)
                 console.log(res)
                 if (res.status === 200){
                     alert("Successful Purchase!")
+
+                    // Reset data on success
+                    setCartContent([])
+                    setDeliveryFee(0)
+                    setSuccessMsg(res.data)
+                    dispatchCheckout({type:"reset"})
+                    setCartCount(0)
                     handleNext()
                 }
                 else {
@@ -76,7 +92,6 @@ function CardForm({ handleNext}: CardFormProps) {
                     if (reg.test(val) && val.length <= 8){
                         setCardNum(val);
                     }
-                    console.log("Invalid")
                 }}
                 value={cardNum}
                 required

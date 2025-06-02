@@ -32,7 +32,7 @@ function Header() {
                          <ShoppingCartOutlinedIcon />
                         </Box>
                     </Button>
-                    <Button variant="outlined" color="inherit" endIcon={<AccountBoxIcon/>} sx={{width:"100px"}}>Login</Button>
+                    <Button variant="outlined" color="inherit" endIcon={<AccountBoxIcon/>} sx={{width:"100px"}} href={"/login"}>Login</Button>
                 </ButtonGroup>
             </Box>
         </Toolbar>

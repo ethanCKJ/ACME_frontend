@@ -4,7 +4,7 @@ import { Box, TableContainer, Typography, Table, TableHead, TableRow, TableBody,
 import { cartObj, useCart } from '../contexts/CartContext'
 import QuantityInput from '../components/global/QuantityInput'
 import { centsToDollar, dollarToCents } from '../components/cent2Dollar'
-import { EXPRESS_DELIVERY_FEE, STANDARD_DELIVERY_FEE } from '../components/constants'
+import { PREMIUM_DELIVERY_FEE as PREMIUM_DELIVERY_FEE, STANDARD_DELIVERY_FEE } from '../components/constants'
 interface ColHeaderProps {
   width: number,
   text: string,
@@ -78,12 +78,12 @@ function CartPage() {
                   setDeliveryFee(STANDARD_DELIVERY_FEE);
                 }
                 else{
-                  setDeliveryFee(EXPRESS_DELIVERY_FEE);
+                  setDeliveryFee(PREMIUM_DELIVERY_FEE);
                 }
               }} value={deliveryFee}>
                 {/* Problem here is selection (value of RadioGroup) is not tied to deliveryFee state to need to double click */}
                 <FormControlLabel value={STANDARD_DELIVERY_FEE} control={<Radio/>} label={`standard $${centsToDollar(STANDARD_DELIVERY_FEE)}`} labelPlacement='end'/>
-                <FormControlLabel value={EXPRESS_DELIVERY_FEE} control={<Radio/>} label={`express $${centsToDollar(EXPRESS_DELIVERY_FEE)}`} labelPlacement='end'/>
+                <FormControlLabel value={PREMIUM_DELIVERY_FEE} control={<Radio/>} label={`premium $${centsToDollar(PREMIUM_DELIVERY_FEE)}`} labelPlacement='end'/>
               </RadioGroup>
             </FormControl>
           </Grid2>
