@@ -1,10 +1,14 @@
 import { ThemeOptions } from '@mui/material/styles';
 // https://zenoo.github.io/mui-theme-creator/
+// const themeOrange =
 export const themeOptions: ThemeOptions = {
   palette: {
     mode: 'light',
     primary: {
       main: '#f85e00',
+      light: '#F97E33',
+      dark: '#AD4100',
+
     },
     secondary: {
       main: '#a41623',

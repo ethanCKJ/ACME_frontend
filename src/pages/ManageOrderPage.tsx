@@ -14,15 +14,23 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import OrderAccordion from "../components/dashboard/OrderAccordion";
 
 export enum OrderState {
-  NOT_READY ="NOT_READY",
+  NOT_READY = "NOT_READY",
   READY_TO_SHIP = "READY_TO_SHIP",
   DISPATCHED = "DISPATCHED",
   FULFILLED = "FULFILLED",
   CANCELLED = "CANCELLED"
 }
+enum ProductCategory {
+  cookie = "cookie",
+  cake = "cake",
+  bread = "bread",
+  special_bread = "special_bread",
+}
 export interface StaffOrderDetail{
   productId: number,
+  productName: string,
   quantity: number,
+  category: ProductCategory,
 }
 export interface StaffOrder{
   orderId: number,
@@ -48,12 +56,10 @@ function ManageOrderPage() {
   const [staffOrders, setStaffOrders] = useState([])
   const loadOrders = async () => {
     try {
-      console.log("HELLO")
       const res = await api.get(`/view_orders?orderState=${tabValue.valueOf()}`)
       console.log(res)
       if (res.status === 200){
         setStaffOrders(res.data);
-        console.log("SUCCESS");
       }
       else {
         console.log(res)
