@@ -25,39 +25,39 @@ interface OrderAccordionProps {
   setStaffOrders: React.Dispatch<React.SetStateAction<never[]>>,
   index: number,
 }
-interface StyledTypographyProps{
+
+interface StyledTypographyProps {
   field: string,
   value: string,
 }
+
 const nameCharLimit = 19;
 const warningColor = "rgba(255,193,7,0.8)"
 const dangerColor = "rgba(255,87,34,0.8)"
 const safeColor = "rgba(76,175,80,0.8)"
 
 
-function OrderAccordion({staffOrder, staffOrders, setStaffOrders} : OrderAccordionProps) {
+function OrderAccordion({staffOrder, staffOrders, setStaffOrders}: OrderAccordionProps) {
   const originalState = staffOrder.orderState;
   const [newState, setNewState] = useState(staffOrder.orderState)
-  const [errorUpdate, setErrorUpdate] = useState(false);
   const columns: GridColDef<StaffOrderDetail>[] = [
-    {field: "productId", headerName:"Product id", width:120},
-    {field: "productName", headerName:"Name", width:350},
-    {field: "quantity", headerName:"Quantity", width:120},
-    {field: "category", headerName:"category", width:150},
+    {field: "productId", headerName: "Product id", width: 120},
+    {field: "productName", headerName: "Name", width: 350},
+    {field: "quantity", headerName: "Quantity", width: 120},
+    {field: "category", headerName: "category", width: 150},
   ]
   const theme = useTheme();
   let displayName = staffOrder.customerName;
-  if (staffOrder.customerName.length > nameCharLimit){
+  if (staffOrder.customerName.length > nameCharLimit) {
     displayName = staffOrder.customerName.substring(0, nameCharLimit) + "..."
   }
   const dayDifference = Math.floor((new Date(staffOrder.requiredDate).valueOf() - (Date.now()).valueOf()) / (1000 * 60 * 60 * 24));
   let dayColor = safeColor;
   let message = "days until due"
-  if (dayDifference < 0){
+  if (dayDifference < 0) {
     dayColor = dangerColor;
     message = "days overdue"
-  }
-  else if (dayDifference == 1){
+  } else if (dayDifference == 1) {
     dayColor = warningColor;
   }
 
@@ -68,33 +68,38 @@ function OrderAccordion({staffOrder, staffOrders, setStaffOrders} : OrderAccordi
       // Update local state instead of refetching all data from the database.
       const newItem = staffOrders.filter((va) => va.orderId != staffOrder.orderId)
       setStaffOrders(newItem)
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
-      setErrorUpdate(true);
+      alert("Error in updating state")
     }
   }
 
   const StyledTypography = ({field, value}: StyledTypographyProps) => (
-      <Box sx={{display:"flex"}}>
-        <Typography sx={{fontWeight:"bold", width:"140px"}}>{field+":"}</Typography>
+      <Box sx={{display: "flex"}}>
+        <Typography sx={{fontWeight: "bold", width: "140px"}}>{field + ":"}</Typography>
         <Typography>{value}</Typography>
       </Box>
   )
   return (
       <Accordion disableGutters>
         <AccordionSummary expandIcon={<ArrowDropDownIcon/>}>
-          <Typography component="span" sx={{width:"230px"}}>{`#${staffOrder.orderId} ${displayName}`}</Typography>
-          <Typography component="span" sx={{marginLeft:"20px"}}>{`Due ${staffOrder.requiredDate}`}</Typography>
-          <Typography component="span" sx={{marginLeft:"20px", padding:"0px 3px", background: dayColor}}>{`${Math.abs(dayDifference)} ${message}`}</Typography>
+          <Typography component="span"
+                      sx={{width: "230px"}}>{`#${staffOrder.orderId} ${displayName}`}</Typography>
+          <Typography component="span"
+                      sx={{marginLeft: "20px"}}>{`Due ${staffOrder.requiredDate}`}</Typography>
+          <Typography component="span" sx={{
+            marginLeft: "20px",
+            padding: "0px 3px",
+            background: dayColor
+          }}>{`${Math.abs(dayDifference)} ${message}`}</Typography>
         </AccordionSummary>
-        <AccordionDetails sx={{display:"flex", flexDirection:"column"}}>
+        <AccordionDetails sx={{display: "flex", flexDirection: "column"}}>
           <Box>
-            <Divider  sx={{
+            <Divider sx={{
               // make it darker or thicker
               borderColor: 'rgba(0,0,0,0.5)',
               borderBottomWidth: '2px',
-            }} />
+            }}/>
             <Typography>Products</Typography>
             <DataGrid
                 rows={staffOrder.orderDetails}
@@ -114,11 +119,11 @@ function OrderAccordion({staffOrder, staffOrders, setStaffOrders} : OrderAccordi
                   '& .MuiDataGrid-cell': {
                     pointerEvents: 'none',
                   },
-                  '& .MuiDataGrid-columnHeader--sortable ':{
+                  '& .MuiDataGrid-columnHeader--sortable ': {
                     backgroundColor: theme.palette.primary.light,
                     color: "white"
                   },
-                  '& .MuiDataGrid-filler':{
+                  '& .MuiDataGrid-filler': {
                     backgroundColor: theme.palette.primary.light,
                     color: "white"
                   },
@@ -126,12 +131,12 @@ function OrderAccordion({staffOrder, staffOrders, setStaffOrders} : OrderAccordi
                 hideFooter
             />
           </Box>
-          <Divider  sx={{
+          <Divider sx={{
             // make it darker or thicker
             borderColor: 'rgba(0,0,0,0.5)',
             borderBottomWidth: '2px',
-            margin:"20px 0px"
-          }} />
+            margin: "20px 0px"
+          }}/>
           <Box>
             <Typography>Customer Details</Typography>
             <StyledTypography field="Name" value={staffOrder.customerName}/>
@@ -148,20 +153,21 @@ function OrderAccordion({staffOrder, staffOrders, setStaffOrders} : OrderAccordi
                 : <StyledTypography field="Dispatch date" value={staffOrder.dispatchDate}/>
             }
           </Box>
-          <Divider  sx={{
+          <Divider sx={{
             // make it darker or thicker
             borderColor: 'rgba(0,0,0,0.5)',
             borderBottomWidth: '2px',
-            margin:"20px 0px"
-          }} />
-          <Box sx={{display:"flex", flexDirection:"row", alignItems:"center", columnGap:"10px"}}>
+            margin: "20px 0px"
+          }}/>
+          <Box
+              sx={{display: "flex", flexDirection: "row", alignItems: "center", columnGap: "10px"}}>
             <Typography fontSize={"18px"}>Update state</Typography>
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 200 }}>
+            <FormControl variant="standard" sx={{m: 1, minWidth: 200}}>
               <Select
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
                   value={newState}
-                  onChange={(e : SelectChangeEvent) => setNewState(e.target.value)}
+                  onChange={(e: SelectChangeEvent) => setNewState(e.target.value)}
               >
                 <MenuItem value={OrderState.NOT_READY}>Not ready</MenuItem>
                 <MenuItem value={OrderState.READY_TO_SHIP}>Ready to ship</MenuItem>
@@ -172,11 +178,12 @@ function OrderAccordion({staffOrder, staffOrders, setStaffOrders} : OrderAccordi
             </FormControl>
             <Button onClick={
               () => {
-                if (newState !== originalState){
+                if (newState !== originalState) {
                   sendNewOrderState()
-              }
-            }} variant="contained">Save</Button>
-            {newState !== originalState ? <Typography sx={{color:"red"}}>You have unsaved changes</Typography> : null}
+                }
+              }} variant="contained">Save</Button>
+            {newState !== originalState ?
+                <Typography sx={{color: "red"}}>You have unsaved changes</Typography> : null}
           </Box>
         </AccordionDetails>
       </Accordion>

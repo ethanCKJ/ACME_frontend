@@ -8,7 +8,7 @@ interface StyledImageInterface {
 }
 const StyledImage = ({name}: StyledImageInterface) => {
     return (<Box sx={{display: "flex", justifyContent:"center",}}>
-                <img src={`/images/homepage/${name}.webp`} width="600px" height="280px"/>
+                <img src={`/images/homepage/${name}.webp`} width="560px" height="420px"/>
             </Box>)
 }
 const names: Array<string> = ["bread","cake", "cookie", "eggTart"]

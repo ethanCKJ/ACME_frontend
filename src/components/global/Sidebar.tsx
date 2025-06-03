@@ -106,7 +106,6 @@ function Sidebar() {
           <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", padding:"0px 30px", height:"60px"}} bgcolor={"primary"}>
             <IconButton onClick={toggleDrawer}>
               <MenuIcon/>
-              {/*{theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}*/}
             </IconButton>
           </Box>
           <Divider />

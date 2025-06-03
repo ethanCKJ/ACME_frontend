@@ -7,7 +7,7 @@ import { useCart } from '../../contexts/CartContext';
 function Header() {
     const {cartCount} = useCart()
     const buttonInfo =[
-        {href: "/about", body: "About us", width:"80px"},
+        // {href: "/about", body: "About us", width:"80px"},
         {href: "/cookie", body: "Cookies"},
         {href: "/cake", body: "Cakes"},
         {href: "/bread", body: "Bread"},

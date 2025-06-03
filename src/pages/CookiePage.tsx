@@ -44,8 +44,8 @@ function CookiePage() {
         let min = priceRange[0]
         let max = priceRange[1]
         if (newPriceRange[0] !== '' && newPriceRange[1] !== '') {
-            max = clip(newPriceRange[1], minPrice, maxPrice)
             min = clip(newPriceRange[0], minPrice, max)
+            max = clip(newPriceRange[1], minPrice, maxPrice)
             setPriceRange([min, max]);
         }
         setDisplayRange([min, max])
@@ -87,7 +87,8 @@ function CookiePage() {
                         />
                     </Box>
                     <Box sx={{ display: "flex", wrap: "nowrap", marginTop: "15px", justifyContent: "space-between" }}>
-                        <TextField label="Min" variant="standard" type="number" value={centsToDollar(displayRange[0])} onChange={(e: Event) => { setDisplayRange([dollarToCents(e.target.value), displayRange[1]]) }} onBlur={() => handleSliderUpdate(null, displayRange)} sx={{ width: "70px" }} />
+                        <TextField label="Min" variant="standard" type="number"
+                                   value={centsToDollar(displayRange[0])} onChange={(e: Event) => { setDisplayRange([e.target.value, displayRange[1]]) }} onBlur={() => handleSliderUpdate(null, displayRange)} sx={{ width: "70px" }} />
                         <TextField label="Max" variant="standard" type="number" value={centsToDollar(displayRange[1])} onChange={(e: Event) => { setDisplayRange([displayRange[0], dollarToCents(e.target.value)]) }} onBlur={() => handleSliderUpdate(null, displayRange)} sx={{ width: "70px" }} />
                     </Box>
                 </Box>

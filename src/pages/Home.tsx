@@ -11,28 +11,28 @@ function Home() {
   const data = [
     {
       title: "Cookies",
-      body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis minus optio eveniet nam quibusdam enim itaque voluptatem nihil doloribus iusto cum at voluptas, sequi ipsum ducimus libero consequatur porro explicabo. Impedit illum deserunt fuga eligendi, accusantium minima assumenda soluta harum, reprehenderit debitis alias tempore esse. Ipsum nihil cupiditate numquam nobis?",
+      body: "Freshly baked cookies in classic and gourmet flavors, perfect for any sweet craving.",
       buttonText: "Treat yourself today!",
       imgName: "cookie_square",
       href: "/cookie"
     },
     {
       title: "Cakes",
-      body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis minus optio eveniet nam quibusdam enim itaque voluptatem nihil doloribus iusto cum at voluptas, sequi ipsum ducimus libero consequatur porro explicabo. Impedit illum deserunt fuga eligendi, accusantium minima assumenda soluta harum, reprehenderit debitis alias tempore esse. Ipsum nihil cupiditate numquam nobis?",
+      body: "Handcrafted cakes for celebrations and everyday indulgence, made with premium ingredients daily.",
       buttonText: "Treat yourself today!",
       imgName: "cake_square",
       href: "/cake"
     },
     {
       title: "Bread",
-      body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis minus optio eveniet nam quibusdam enim itaque voluptatem nihil doloribus iusto cum at voluptas, sequi ipsum ducimus libero consequatur porro explicabo. Impedit illum deserunt fuga eligendi, accusantium minima assumenda soluta harum, reprehenderit debitis alias tempore esse. Ipsum nihil cupiditate numquam nobis?",
+      body: "Artisan breads baked fresh every morning using traditional recipes and finest quality flour.",
       buttonText: "Treat yourself today!",
       imgName: "bread_square",
       href: "/bread"
     },
     {
       title: "Special bread",
-      body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis minus optio eveniet nam quibusdam enim itaque voluptatem nihil doloribus iusto cum at voluptas, sequi ipsum ducimus libero consequatur porro explicabo. Impedit illum deserunt fuga eligendi, accusantium minima assumenda soluta harum, reprehenderit debitis alias tempore esse. Ipsum nihil cupiditate numquam nobis?",
+      body: "Delicate pastries and specialty baked goods featuring flaky crusts and rich, creamy fillings.",
       buttonText: "Treat yourself today!",
       imgName: "eggTart_square",
       href: "/special_bread"

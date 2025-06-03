@@ -17,7 +17,7 @@ function HomeCard({title, body, buttonText, href, imgName}:HomeCardProps) {
             <Typography variant="h4">
                 {title}
             </Typography>
-            <Typography variant="body1">
+            <Typography variant="body1" sx={{height:"180px"}}>
                 {body}
             </Typography>
             <Button color="primary" variant="contained" href={href} sx={{width: "220px", textAlign: "left", marginTop: "20px"}}>
