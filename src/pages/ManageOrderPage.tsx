@@ -1,59 +1,90 @@
-import React, {ReactNode, useState} from 'react'
-import Sidebar from "../components/global/Sidebar.tsx";
+import React, {useEffect, useState} from 'react'
+import Sidebar from '../components/global/Sidebar.tsx';
+import OrderTabs from "../components/dashboard/OrderTabs";
+import api from "../components/api";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
   Button,
-  Tab,
-  Tabs,
   Typography
 } from "@mui/material";
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import OrderAccordion from "../components/dashboard/OrderAccordion";
+
+export enum OrderState {
+  NOT_READY ="NOT_READY",
+  READY_TO_SHIP = "READY_TO_SHIP",
+  DISPATCHED = "DISPATCHED",
+  FULFILLED = "FULFILLED",
+  CANCELLED = "CANCELLED"
+}
+export interface StaffOrderDetail{
+  productId: number,
+  quantity: number,
+}
+export interface StaffOrder{
+  orderId: number,
+  customerName: string,
+  email: string,
+  phone: string,
+  addressLine1: string,
+  addressLine2: string,
+  addressLine3: string,
+  postcode: string,
+  city: string,
+  orderDetails: StaffOrderDetail[],
+  requiredDate: Date,
+  dispatchDate: Date | null,
+  orderState: OrderState,
+}
 
 function ManageOrderPage() {
-  const [tabValue, setTabValue] = useState('1');
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const [tabValue, setTabValue] = useState(OrderState.NOT_READY);
+  const handleChange = (event: React.SyntheticEvent, newValue: OrderState) => {
     setTabValue(newValue);
   };
+  const [staffOrders, setStaffOrders] = useState([])
+  const loadOrders = async () => {
+    try {
+      console.log("HELLO")
+      const res = await api.get(`/view_orders?orderState=${tabValue.valueOf()}`)
+      console.log(res)
+      if (res.status === 200){
+        setStaffOrders(res.data);
+        console.log("SUCCESS");
+      }
+      else {
+        console.log(res)
+      }
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+  useEffect(() => {
+    loadOrders()
+  }, [tabValue]);
+
+
 
   return (
       <>
         <Sidebar/>
-        <Box sx={{width:"100%", background:"ivory", height:"100%", padding:"5px 20px"}}>
-          <Box sx={{ width: '100%', display:"flex", justifyContent:"center", columnGap:"20px", alignItems:"center"}}>
-            <Tabs value={tabValue} onChange={handleChange}
-                  textColor="secondary"
-                  indicatorColor="secondary"
-                  variant="fullWidth"
-                  sx={{width:"800px"}}
-            >
-                  <Tab label="Not ready" value="1" />
-                  <Tab label="Ready to ship" value="2" />
-                  <Tab label="Dispatched" value="3" />
-                  <Tab label="Fulfilled" value="4" />
-                  <Tab label="Cancelled" value="5" />
-            </Tabs>
-            <Button variant={"contained"} sx={{height:"30px"}}>Refresh</Button>
+        <Box sx={{width: "100%", background: "ivory", height: "100%", padding: "5px 20px"}}>
+          <Box sx={{
+            width: '100%',
+            display: "flex",
+            justifyContent: "center",
+            columnGap: "20px",
+            alignItems: "center"
+          }}>
+            <OrderTabs tabValue={tabValue} handleChange={handleChange}/>
+            <Button variant={"contained"} sx={{height: "30px"}}>Refresh</Button>
           </Box>
-          <Box sx={{display:"flex", flexDirection:"column",marginTop:"20px"}}>
-            <Accordion>
-              <AccordionSummary
-                  expandIcon={<ArrowDropDownIcon />}
-                  aria-controls="panel2-content"
-                  id="panel2-header"
-              >
-                <Typography component="span">Accordion 2</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
+          <Box sx={{display: "flex", flexDirection: "column", marginTop: "20px"}}>
+            {staffOrders.length > 0 ? staffOrders.map((value : StaffOrder) => <OrderAccordion key={value.orderId} staffOrders={value} setStaffOrders={setStaffOrders}/> ) : <p>No orders to show</p>}
           </Box>
         </Box>
       </>

@@ -70,7 +70,6 @@ function Sidebar() {
       <>
         <AppBar position="static" sx={{height: "60px", display:"flex", justifyContent:"center"}}>
           <Toolbar>
-            <Box display={"flex"} justifyContent={"flex-start"} padding={"20px"} flexGrow={1} alignItems={"center"}>
               <IconButton
                   color="inherit"
                   aria-label="open drawer"
@@ -78,13 +77,15 @@ function Sidebar() {
                   edge="start"
                   sx={[
                     {
-                      mr: "200px",
+                      ml: "6px",
+                      // position:"fixed",
                     },
                   ]}
               >
                 <MenuIcon/>
               </IconButton>
-              <Typography fontWeight={"bold"} fontSize={"20px"}>{title}</Typography>
+            <Box display={"flex"} justifyContent={"flex-start"} padding={"20px"} flexGrow={1} alignItems={"center"}>
+              <Typography sx={{marginLeft:"200px"}} fontWeight={"bold"} fontSize={"20px"}>{title}</Typography>
             </Box>
           </Toolbar>
         </AppBar>

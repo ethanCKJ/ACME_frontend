@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react'
 import {TOKEN_KEY} from "../constants.ts";
-import {jwtDecode} from "jwt-decode";
+import {jwtDecode, JwtPayload} from "jwt-decode";
 import {Navigate, useLocation} from "react-router-dom";
 
 interface ProtectedRoutesProps {
@@ -20,11 +20,11 @@ function ProtectedRoutes({children, allowsRoles} : ProtectedRoutesProps) {
   const location = useLocation();
   if (token){
     try {
-      const decoded = jwtDecode(token);
-      console.log(decoded)
-      const expiration = decoded.exp;
+      const decoded= jwtDecode<JwtPayload>(token);
+      // decoded.exp is seconds from epoch
+      const expMillisecondsFromEpoch = decoded.exp * 1000;
       const roles = decoded.roles;
-      if (expiration && expiration < Date.now() && allowsRoles.includes(roles)){
+      if (expMillisecondsFromEpoch && expMillisecondsFromEpoch > Date.now() && allowsRoles.includes(roles)){
         authenticated = true;
       }
     } catch { /* empty */ }
