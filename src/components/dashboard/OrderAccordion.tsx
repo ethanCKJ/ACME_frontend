@@ -17,10 +17,13 @@ import {
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {OrderState, StaffOrder, StaffOrderDetail} from "../../pages/ManageOrderPage";
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
+import api from '../api';
 
 interface OrderAccordionProps {
-  staffOrders: StaffOrder,
-  setStaffOrders: React.Dispatch<React.SetStateAction<never[]>>
+  staffOrder: StaffOrder,
+  staffOrders: StaffOrder[],
+  setStaffOrders: React.Dispatch<React.SetStateAction<never[]>>,
+  index: number,
 }
 interface StyledTypographyProps{
   field: string,
@@ -31,21 +34,23 @@ const warningColor = "rgba(255,193,7,0.8)"
 const dangerColor = "rgba(255,87,34,0.8)"
 const safeColor = "rgba(76,175,80,0.8)"
 
-function OrderAccordion({staffOrders, setStaffOrders} : OrderAccordionProps) {
-  const originalState = staffOrders.orderState;
-  const [newState, setNewState] = useState(staffOrders.orderState)
-const columns: GridColDef<StaffOrderDetail>[] = [
+
+function OrderAccordion({staffOrder, staffOrders, setStaffOrders} : OrderAccordionProps) {
+  const originalState = staffOrder.orderState;
+  const [newState, setNewState] = useState(staffOrder.orderState)
+  const [errorUpdate, setErrorUpdate] = useState(false);
+  const columns: GridColDef<StaffOrderDetail>[] = [
     {field: "productId", headerName:"Product id", width:120},
     {field: "productName", headerName:"Name", width:350},
     {field: "quantity", headerName:"Quantity", width:120},
     {field: "category", headerName:"category", width:150},
-]
+  ]
   const theme = useTheme();
-  let displayName = staffOrders.customerName;
-  if (staffOrders.customerName.length > nameCharLimit){
-    displayName = staffOrders.customerName.substring(0, nameCharLimit) + "..."
+  let displayName = staffOrder.customerName;
+  if (staffOrder.customerName.length > nameCharLimit){
+    displayName = staffOrder.customerName.substring(0, nameCharLimit) + "..."
   }
-  const dayDifference = Math.floor((new Date(staffOrders.requiredDate).valueOf() - (Date.now()).valueOf()) / (1000 * 60 * 60 * 24));
+  const dayDifference = Math.floor((new Date(staffOrder.requiredDate).valueOf() - (Date.now()).valueOf()) / (1000 * 60 * 60 * 24));
   let dayColor = safeColor;
   let message = "days until due"
   if (dayDifference < 0){
@@ -55,6 +60,21 @@ const columns: GridColDef<StaffOrderDetail>[] = [
   else if (dayDifference == 1){
     dayColor = warningColor;
   }
+
+  const sendNewOrderState = async () => {
+    try {
+      const res = await api.post("/set_order_state",
+          {orderId: staffOrder.orderId, newState: newState})
+      // Update local state instead of refetching all data from the database.
+      const newItem = staffOrders.filter((va) => va.orderId != staffOrder.orderId)
+      setStaffOrders(newItem)
+    }
+    catch (e) {
+      console.log(e);
+      setErrorUpdate(true);
+    }
+  }
+
   const StyledTypography = ({field, value}: StyledTypographyProps) => (
       <Box sx={{display:"flex"}}>
         <Typography sx={{fontWeight:"bold", width:"140px"}}>{field+":"}</Typography>
@@ -64,8 +84,8 @@ const columns: GridColDef<StaffOrderDetail>[] = [
   return (
       <Accordion disableGutters>
         <AccordionSummary expandIcon={<ArrowDropDownIcon/>}>
-          <Typography component="span" sx={{width:"230px"}}>{`#${staffOrders.orderId} ${displayName}`}</Typography>
-          <Typography component="span" sx={{marginLeft:"20px"}}>{`Due ${staffOrders.requiredDate}`}</Typography>
+          <Typography component="span" sx={{width:"230px"}}>{`#${staffOrder.orderId} ${displayName}`}</Typography>
+          <Typography component="span" sx={{marginLeft:"20px"}}>{`Due ${staffOrder.requiredDate}`}</Typography>
           <Typography component="span" sx={{marginLeft:"20px", padding:"0px 3px", background: dayColor}}>{`${Math.abs(dayDifference)} ${message}`}</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{display:"flex", flexDirection:"column"}}>
@@ -77,7 +97,7 @@ const columns: GridColDef<StaffOrderDetail>[] = [
             }} />
             <Typography>Products</Typography>
             <DataGrid
-                rows={staffOrders.orderDetails}
+                rows={staffOrder.orderDetails}
                 columns={columns}
                 getRowId={(param) => param.productId}
                 initialState={{
@@ -114,18 +134,18 @@ const columns: GridColDef<StaffOrderDetail>[] = [
           }} />
           <Box>
             <Typography>Customer Details</Typography>
-            <StyledTypography field="Name" value={staffOrders.customerName}/>
-            <StyledTypography field="Email" value={staffOrders.email}/>
-            <StyledTypography field="Phone" value={staffOrders.phone}/>
-            <StyledTypography field="Address Line 1" value={staffOrders.addressLine1}/>
-            <StyledTypography field="Address Line 2" value={staffOrders.addressLine2}/>
-            <StyledTypography field="Address Line 3" value={staffOrders.addressLine3}/>
-            <StyledTypography field="Postcode" value={staffOrders.postcode}/>
-            <StyledTypography field="City" value={staffOrders.city}/>
-            <StyledTypography field="Required Date" value={staffOrders.requiredDate}/>
-            {staffOrders.orderState === OrderState.NOT_READY || staffOrders.orderState === OrderState.READY_TO_SHIP ?
+            <StyledTypography field="Name" value={staffOrder.customerName}/>
+            <StyledTypography field="Email" value={staffOrder.email}/>
+            <StyledTypography field="Phone" value={staffOrder.phone}/>
+            <StyledTypography field="Address Line 1" value={staffOrder.addressLine1}/>
+            <StyledTypography field="Address Line 2" value={staffOrder.addressLine2}/>
+            <StyledTypography field="Address Line 3" value={staffOrder.addressLine3}/>
+            <StyledTypography field="Postcode" value={staffOrder.postcode}/>
+            <StyledTypography field="City" value={staffOrder.city}/>
+            <StyledTypography field="Required Date" value={staffOrder.requiredDate}/>
+            {staffOrder.orderState === OrderState.NOT_READY || staffOrder.orderState === OrderState.READY_TO_SHIP ?
                 <StyledTypography field="Dispatch date" value="Not yet dispatched"/>
-                : <StyledTypography field="Dispatch date" value={staffOrders.dispatchDate}/>
+                : <StyledTypography field="Dispatch date" value={staffOrder.dispatchDate}/>
             }
           </Box>
           <Divider  sx={{
@@ -150,7 +170,12 @@ const columns: GridColDef<StaffOrderDetail>[] = [
                 <MenuItem value={OrderState.CANCELLED}>Cancelled</MenuItem>
               </Select>
             </FormControl>
-            <Button variant="contained">Save</Button>
+            <Button onClick={
+              () => {
+                if (newState !== originalState){
+                  sendNewOrderState()
+              }
+            }} variant="contained">Save</Button>
             {newState !== originalState ? <Typography sx={{color:"red"}}>You have unsaved changes</Typography> : null}
           </Box>
         </AccordionDetails>

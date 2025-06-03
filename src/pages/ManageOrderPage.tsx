@@ -89,8 +89,8 @@ function ManageOrderPage() {
             <OrderTabs tabValue={tabValue} handleChange={handleChange}/>
             <Button variant={"contained"} sx={{height: "30px"}}>Refresh</Button>
           </Box>
-          <Box sx={{display: "flex", flexDirection: "column", marginTop: "20px"}}>
-            {staffOrders.length > 0 ? staffOrders.map((value : StaffOrder) => <OrderAccordion key={value.orderId} staffOrders={value} setStaffOrders={setStaffOrders}/> ) : <p>No orders to show</p>}
+          <Box sx={{display: "flex", flexDirection: "column", marginTop: "20px", rowGap:"10px"}}>
+            {staffOrders.length > 0 ? staffOrders.map((value : StaffOrder, idx) => <OrderAccordion key={value.orderId}  index={idx} staffOrder={value} setStaffOrders={setStaffOrders} staffOrders={staffOrders}/> ) : <p>No orders to show</p>}
           </Box>
         </Box>
       </>
