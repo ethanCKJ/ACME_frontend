@@ -6,19 +6,30 @@ import ProductCard from '../components/ProductCard'
 import ShoppingCartPanel from '../components/ShoppingCartPanel'
 import { useCart } from '../contexts/CartContext'
 import { centsToDollar, dollarToCents } from '../components/cent2Dollar'
+import {ProductCategory} from "../components/global/types";
 
+interface Product {
+    id: number,
+    productInfo: string,
+    stock: number,
+    price: number,
+    productCategory: ProductCategory,
+    imageName: string,
+    productName: string,
+    isDiscontinued: boolean
+}
 const sortOrderOptions = ["Popularity", "Price high to low", "Price low to high", "A to Z", "Z to A",]
 function CookiePage() {
     // define min and max price values - have defaults
     const maxPrice = 1000
     const minPrice = 0
     const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice])
-    const [displayRange, setDisplayRange] = useState<number | string[]>([minPrice, maxPrice])
+    // const [displayRange, setDisplayRange] = useState<number | string[]>([minPrice, maxPrice])
     const [sortOrder, setSortOrder] = useState<string>("Popularity")
     const clip = (val: number, min: number, max: number) => {
         return Math.min(Math.max(min, val), max)
     }
-    const [products, setProducts] = useState<object[]>([])
+    const [products, setProducts] = useState<Product[]>([])
     const theme = useTheme();
     const { addToCart } = useCart();
 
@@ -40,22 +51,26 @@ function CookiePage() {
     }
     useEffect(() => { getProducts("cookie") }, [])
 
-    const handleSliderUpdate = (event: Event, newPriceRange: (number | string)[]) => {
-        let min = priceRange[0]
-        let max = priceRange[1]
-        if (newPriceRange[0] !== '' && newPriceRange[1] !== '') {
-            min = clip(newPriceRange[0], minPrice, max)
-            max = clip(newPriceRange[1], minPrice, maxPrice)
-            setPriceRange([min, max]);
-        }
-        setDisplayRange([min, max])
+    const handleSliderUpdate = (event: Event,
+                                newPriceRange: number[],
+                                ) => {
+        console.log(newPriceRange)
+        setPriceRange(newPriceRange);
     }
 
     const handleSortOrderChange = (event: Event) => {
-        let newOrder = event.target.value;
+        const newOrder = event.target.value;
         if (newOrder !== null && newOrder !== sortOrder) {
             setSortOrder(newOrder)
             // sort the data
+            switch (newOrder){
+                case "Price high to low": products.sort((a, b) => b.price - a.price); break;
+                case "Price low to high": products.sort((a, b) => a.price - b.price); break;
+                case "A to Z": products.sort((a, b) => a.productName.localeCompare(b.productName)); break;
+                case "Z to A": products.sort((a, b) => b.productName.localeCompare(a.productName)); break;
+                default:
+                    products.sort((a,b) => a.id - b.id)
+            }
         }
     }
 
@@ -67,6 +82,8 @@ function CookiePage() {
                 </Box>
             </Box>)
     }
+
+
 
     return (
         <>
@@ -84,12 +101,20 @@ function CookiePage() {
                             onChange={handleSliderUpdate}
                             sx={{ width: "180px" }}
                             disableSwap
+                            min={minPrice}
+                            max={maxPrice}
+                            onBlur={() => getProducts("cookie")}
                         />
                     </Box>
-                    <Box sx={{ display: "flex", wrap: "nowrap", marginTop: "15px", justifyContent: "space-between" }}>
-                        <TextField label="Min" variant="standard" type="number"
-                                   value={centsToDollar(displayRange[0])} onChange={(e: Event) => { setDisplayRange([e.target.value, displayRange[1]]) }} onBlur={() => handleSliderUpdate(null, displayRange)} sx={{ width: "70px" }} />
-                        <TextField label="Max" variant="standard" type="number" value={centsToDollar(displayRange[1])} onChange={(e: Event) => { setDisplayRange([displayRange[0], dollarToCents(e.target.value)]) }} onBlur={() => handleSliderUpdate(null, displayRange)} sx={{ width: "70px" }} />
+                    <Box sx={{ display: "flex", wrap: "nowrap", marginTop: "10px", justifyContent: "space-between" }}>
+                        <Box sx={{display:"flex", flexDirection:"column", margin:0, padding:0}}>
+                            <Typography fontSize={"14px"} sx={{marginLeft:"2px"}}>Min</Typography>
+                            <Typography sx={{border: "1px solid black", width:"50px", padding:"0px 2px", borderRadius:"4px"}} >{centsToDollar(priceRange[0])}</Typography>
+                        </Box>
+                        <Box sx={{display:"flex", flexDirection:"column", margin:0, padding:0}}>
+                            <Typography fontSize={"14px"} sx={{marginLeft:"2px"}}>Max</Typography>
+                            <Typography sx={{border: "1px solid black", width:"50px", padding:"0px 2px", borderRadius:"4px"}} >{centsToDollar(priceRange[1])}</Typography>
+                        </Box>
                     </Box>
                 </Box>
                 <Box sx={{ flexGrow: 1 }}>

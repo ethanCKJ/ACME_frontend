@@ -97,7 +97,7 @@ function CartPage() {
             {centsToDollar(total + deliveryFee)}
           </Grid2>
           <Grid2 size={12} sx={{display:"flex", justifyContent:"center",marginBottom:"10px"}}>
-            <Button variant="contained" href="/checkout">Proceed to checkout</Button>
+            <Button variant="contained" href="/checkout"  >Proceed to checkout</Button>
           </Grid2>
         </Grid2>
       </Box>

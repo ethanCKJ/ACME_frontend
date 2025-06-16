@@ -30,7 +30,6 @@ function CardForm({handleNext, setSuccessMsg}: CardFormProps) {
     const {cartContent, deliveryFee, setCartContent, setDeliveryFee, setCartCount} = useCart();
     const {checkoutData, dispatchCheckout} = useCheckout();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        console.log("submit card")
         event.preventDefault();
         if (cardNum.length === 8){
             let deliveryFreeStr = "STANDARD";
@@ -43,11 +42,11 @@ function CardForm({handleNext, setSuccessMsg}: CardFormProps) {
                 ...checkoutData
             }
             
-            console.log(packet)
             cartContent.forEach((cartObj: cartObj) => {
                 const {productId, quantity} = cartObj;
                 packet.orderDetails.push({productId, quantity});
             })
+            console.log(packet)
             try{
                 const res = await api.post("/order", packet)
                 console.log(res)
@@ -56,7 +55,7 @@ function CardForm({handleNext, setSuccessMsg}: CardFormProps) {
 
                     // Reset data on success
                     setCartContent([])
-                    setDeliveryFee(0)
+                    setDeliveryFee(STANDARD_DELIVERY_FEE)
                     setSuccessMsg(res.data)
                     dispatchCheckout({type:"reset"})
                     setCartCount(0)

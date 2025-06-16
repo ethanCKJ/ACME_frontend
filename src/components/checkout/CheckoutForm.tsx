@@ -27,7 +27,8 @@ const formInfo: FormInfo[] = [
     fieldKey: "phone",
     fieldType: "text",
     required: true,
-    autocomplete: ""
+    autocomplete: "",
+    maxlen: 20,
   },
   {
     title: "Address Line 1 (required)",
@@ -87,6 +88,7 @@ function CheckoutForm({ handleNext }: CheckoutFormProps) {
           autocomplete={value.autocomplete}
           checkoutData={checkoutData}
           dispatch={dispatchCheckout}
+          maxlen={value.maxlen}
         />)}
         <Button type="submit" variant='contained' sx={{width:"50%"}}>Next</Button>
       </Box>

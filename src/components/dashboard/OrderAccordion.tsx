@@ -7,7 +7,6 @@ import {
   Button,
   Divider,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -38,6 +37,7 @@ const safeColor = "rgba(76,175,80,0.8)"
 
 
 function OrderAccordion({staffOrder, staffOrders, setStaffOrders}: OrderAccordionProps) {
+  const hideDueDate = staffOrder.orderState === OrderState.FULFILLED || staffOrder.orderState === OrderState.CANCELLED;
   const originalState = staffOrder.orderState;
   const [newState, setNewState] = useState(staffOrder.orderState)
   const columns: GridColDef<StaffOrderDetail>[] = [
@@ -57,7 +57,7 @@ function OrderAccordion({staffOrder, staffOrders, setStaffOrders}: OrderAccordio
   if (dayDifference < 0) {
     dayColor = dangerColor;
     message = "days overdue"
-  } else if (dayDifference == 1) {
+  } else if (dayDifference <= 1) {
     dayColor = warningColor;
   }
 
@@ -87,11 +87,12 @@ function OrderAccordion({staffOrder, staffOrders, setStaffOrders}: OrderAccordio
                       sx={{width: "230px"}}>{`#${staffOrder.orderId} ${displayName}`}</Typography>
           <Typography component="span"
                       sx={{marginLeft: "20px"}}>{`Due ${staffOrder.requiredDate}`}</Typography>
-          <Typography component="span" sx={{
-            marginLeft: "20px",
-            padding: "0px 3px",
-            background: dayColor
-          }}>{`${Math.abs(dayDifference)} ${message}`}</Typography>
+          {hideDueDate ?
+              null
+              :
+              <Typography component="span" sx={{marginLeft: "20px",padding: "0px 3px",background: dayColor}}>{`${Math.abs(dayDifference)} ${message}`}
+              </Typography>}
+
         </AccordionSummary>
         <AccordionDetails sx={{display: "flex", flexDirection: "column"}}>
           <Box>

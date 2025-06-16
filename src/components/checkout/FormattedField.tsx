@@ -23,6 +23,7 @@ const isValidEmail = (email: string) => {
 export function FormattedField({ title, fieldKey, fieldType, required, autocomplete, checkoutData, dispatch, maxlen}: FormProps) {
   const [errorMsg, setErrorMsg] = useState('');
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+
     if (maxlen === undefined || e.target.value.length <= maxlen){
       // disable error message when user inputs a valid email
       if (fieldType === "email" && errorMsg !== '' && isValidEmail(e.target.value)){

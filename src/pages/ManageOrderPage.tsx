@@ -2,16 +2,9 @@ import React, {useEffect, useState} from 'react'
 import Sidebar from '../components/global/Sidebar.tsx';
 import OrderTabs from "../components/dashboard/OrderTabs";
 import api from "../components/api";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Button,
-  Typography
-} from "@mui/material";
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import {Box, Button} from "@mui/material";
 import OrderAccordion from "../components/dashboard/OrderAccordion";
+import {ProductCategory} from "../components/global/types";
 
 export enum OrderState {
   NOT_READY = "NOT_READY",
@@ -19,12 +12,6 @@ export enum OrderState {
   DISPATCHED = "DISPATCHED",
   FULFILLED = "FULFILLED",
   CANCELLED = "CANCELLED"
-}
-enum ProductCategory {
-  cookie = "cookie",
-  cake = "cake",
-  bread = "bread",
-  special_bread = "special_bread",
 }
 export interface StaffOrderDetail{
   productId: number,
