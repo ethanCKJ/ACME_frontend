@@ -1,141 +1,150 @@
-import React, { useState } from 'react'
-import { Card, Box, Typography, Button, TextField, FormControl, MenuItem } from '@mui/material'
-import { cartObj, useCart } from '../../contexts/CartContext';
-import { useCheckout } from '../../contexts/CheckoutContext';
+import React, {useState} from 'react'
+import {Box, Button, Card, FormControl, MenuItem, TextField, Typography} from '@mui/material'
+import {cartObj, useCart} from '../../contexts/CartContext';
+import {useCheckout} from '../../contexts/CheckoutContext';
 import api from '../api';
-import { PREMIUM_DELIVERY_FEE, STANDARD_DELIVERY_FEE } from '../constants';
+import {PREMIUM_DELIVERY_FEE, STANDARD_DELIVERY_FEE} from '../constants';
 import {successMsg} from "../../pages/CheckoutPage.tsx";
+
 interface CardFormProps {
-    handleNext: () => void
-    setSuccessMsg: React.Dispatch<React.SetStateAction<successMsg>>,
+  handleNext: () => void
+  setSuccessMsg: React.Dispatch<React.SetStateAction<successMsg>>,
 }
 
-const months = [1,2,3,4,5,6,7,8,9,10,11,12];
+const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const currentYear = (new Date()).getFullYear();
 const years = [
-    currentYear + 1,
-    currentYear + 2,
-    currentYear + 3,
-    currentYear + 4,
-    currentYear + 5,
-    currentYear + 6,
+  currentYear + 1,
+  currentYear + 2,
+  currentYear + 3,
+  currentYear + 4,
+  currentYear + 5,
+  currentYear + 6,
 ]
 
 const reg = new RegExp("^\\d*$")
 
 function CardForm({handleNext, setSuccessMsg}: CardFormProps) {
-    const [cardNum, setCardNum] = useState("");
-    const [month, setMonth] = useState("");
-    const [year, setYear] = useState("");
-    const {cartContent, deliveryFee, setCartContent, setDeliveryFee, setCartCount} = useCart();
-    const {checkoutData, dispatchCheckout} = useCheckout();
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        if (cardNum.length === 8){
-            let deliveryFreeStr = "STANDARD";
-            if (deliveryFee == PREMIUM_DELIVERY_FEE){
-                deliveryFreeStr = "PREMIUM"
-            }
-            const packet = {
-                "orderDetails": [] as object[],
-                "shipping": deliveryFreeStr,
-                ...checkoutData
-            }
-            
-            cartContent.forEach((cartObj: cartObj) => {
-                const {productId, quantity} = cartObj;
-                packet.orderDetails.push({productId, quantity});
-            })
-            console.log(packet)
-            try{
-                const res = await api.post("/order", packet)
-                console.log(res)
-                if (res.status === 200){
-                    alert("Successful Purchase!")
+  const [cardNum, setCardNum] = useState("");
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
+  const {cartContent, deliveryFee, setCartContent, setDeliveryFee, setCartCount} = useCart();
+  const {checkoutData, setCheckoutData} = useCheckout();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (cardNum.length === 8) {
+      let deliveryFreeStr = "STANDARD";
+      if (deliveryFee == PREMIUM_DELIVERY_FEE) {
+        deliveryFreeStr = "PREMIUM"
+      }
+      const packet = {
+        "orderDetails": [] as object[],
+        "shipping": deliveryFreeStr,
+        ...checkoutData
+      }
 
-                    // Reset data on success
-                    setCartContent([])
-                    setDeliveryFee(STANDARD_DELIVERY_FEE)
-                    setSuccessMsg(res.data)
-                    dispatchCheckout({type:"reset"})
-                    setCartCount(0)
-                    handleNext()
-                }
-                else {
-                    alert("Error in purchase")
-                }
-            }
-            catch(err){
-                console.log(err)
-            }
+      cartContent.forEach((cartObj: cartObj) => {
+        const {productId, quantity} = cartObj;
+        packet.orderDetails.push({productId, quantity});
+      })
+      console.log(packet)
+      try {
+        const res = await api.post("/order", packet)
+        console.log(res)
+        if (res.status === 200) {
+          alert("Successful Purchase!")
+
+          // Reset data on success
+          setCartContent([])
+          setDeliveryFee(STANDARD_DELIVERY_FEE)
+          setSuccessMsg(res.data)
+          setCheckoutData({})
+          setCartCount(0)
+          handleNext()
+        } else {
+          alert("Error in purchase")
         }
+      } catch (err) {
+        console.log(err)
+        alert(err)
+      }
     }
-    
-    return (
-        <Card variant='outlined' sx={{ width: "100%", padding: "10px 20px", display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography textAlign={"center"} fontSize="32px" fontWeight="bold">Payment details</Typography>
-            <Box component="form" 
-            onSubmit={handleSubmit}
-            sx={{   display: "flex",
-                    flexDirection: "column",
-                    alignItems: "stretch", 
-                    gap: 2, 
-                    "& .MuiFormLabel-root": { color: "black" }, 
-                    "& .MuiInputBase-input" : {padding:1, minWidth:"100%"}}}>
-                <TextField 
-                variant='outlined'
-                label="Card number"
-                helperText="Just type any 8 digits" 
-                onChange={(e) => {
-                    let val = e.target.value;
-                    if (reg.test(val) && val.length <= 8){
-                        setCardNum(val);
-                    }
-                }}
-                value={cardNum}
-                required
-                autoFocus/>
-                <Box sx={{display: "flex", gap:5}}>
+  }
 
-                <FormControl>
-                    <TextField
-                    select
-                    label="Expiry month"
-                    sx={{width:"150px"}}
-                    onChange={(e) => setMonth(e.target.value)}
-                    value={month}
-                    required
-                    >
-                    {months.map(value => <MenuItem key={value} value={value}>
-                    {value}
-                    </MenuItem> )
-                    }
-                    
-                    </TextField>
-                </FormControl>
-                <FormControl>
-                    <TextField
-                    select
-                    label="Expiry year"
-                    sx={{width:"150px"}}
-                    onChange={(e) => setYear(e.target.value)}
-                    value={year}
-                    required
-                    >
-                    {years.map(value => <MenuItem key={value} value={value}>
-                    {value}
-                    </MenuItem> )}
-                    </TextField>
-                </FormControl>
-                </Box>
+  return (
+      <Card variant='outlined' sx={{
+        width: "100%",
+        padding: "10px 20px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 2
+      }}>
+        <Typography textAlign={"center"} fontSize="32px" fontWeight="bold">Payment
+          details</Typography>
+        <Box component="form"
+             onSubmit={handleSubmit}
+             sx={{
+               display: "flex",
+               flexDirection: "column",
+               alignItems: "stretch",
+               gap: 2,
+               "& .MuiFormLabel-root": {color: "black"},
+               "& .MuiInputBase-input": {padding: 1, minWidth: "100%"}
+             }}>
+          <TextField
+              variant='outlined'
+              label="Card number"
+              helperText="Just type any 8 digits"
+              onChange={(e) => {
+                let val = e.target.value;
+                if (reg.test(val) && val.length <= 8) {
+                  setCardNum(val);
+                }
+              }}
+              value={cardNum}
+              required
+              autoFocus/>
+          <Box sx={{display: "flex", gap: 5}}>
 
-                
-                <Box sx={{display:"flex", width:"100%", justifyContent:"center"}}>
-                    <Button variant='contained' sx={{ width: "50%" }} type="submit">Make payment</Button>
-                </Box>
-            </Box>
-        </Card>
-    )
+            <FormControl>
+              <TextField
+                  select
+                  label="Expiry month"
+                  sx={{width: "150px"}}
+                  onChange={(e) => setMonth(e.target.value)}
+                  value={month}
+                  required
+              >
+                {months.map(value => <MenuItem key={value} value={value}>
+                  {value}
+                </MenuItem>)
+                }
+
+              </TextField>
+            </FormControl>
+            <FormControl>
+              <TextField
+                  select
+                  label="Expiry year"
+                  sx={{width: "150px"}}
+                  onChange={(e) => setYear(e.target.value)}
+                  value={year}
+                  required
+              >
+                {years.map(value => <MenuItem key={value} value={value}>
+                  {value}
+                </MenuItem>)}
+              </TextField>
+            </FormControl>
+          </Box>
+
+
+          <Box sx={{display: "flex", width: "100%", justifyContent: "center"}}>
+            <Button variant='contained' sx={{width: "50%"}} type="submit">Make payment</Button>
+          </Box>
+        </Box>
+      </Card>
+  )
 }
 
 export default CardForm
