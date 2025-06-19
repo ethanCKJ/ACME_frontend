@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useContext, useEffect, useReducer, useState} from "react";
+import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
 
 // 1. Content provided by the context
 export interface CheckoutData {
@@ -22,20 +22,11 @@ export const defaultCheckoutData = {
   addressLine3: "",
   postcode: "",
   city: "",
-  phone:""
+  phone: ""
 }
 
 export type Action = { type: "set"; key: string; value: string; } | { type: "reset" }
-function reducer(state: CheckoutData, action: Action): CheckoutData {
-  switch (action.type) {
-    case "set": {
-      return { ...state, [action.key]: action.value }
-    }
-    case "reset": {
-      return defaultCheckoutData
-    }
-  }
-}
+
 
 interface CheckoutContextInterface {
   checkoutData: CheckoutData;
@@ -46,15 +37,8 @@ interface CheckoutContextInterface {
 export const CheckoutContext = createContext<CheckoutContextInterface | undefined>(undefined)
 
 // 3. export Provider component
-export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
-  // const [checkoutData, dispatchCheckout] = useReducer(reducer, defaultCheckoutData, (defaultData: CheckoutData) => {
-  //   let storedData = localStorage.getItem("checkoutData")
-  //   if (storedData) {
-  //     return JSON.parse(storedData);
-  //   }
-  //   return defaultData
-  // })
-  const [checkoutData, setCheckoutData] = useState(() => {
+export const CheckoutProvider = ({children}: { children: ReactNode }) => {
+  const [checkoutData, setCheckoutData] = useState<CheckoutData>(() => {
     const storedData = localStorage.getItem("checkoutData")
     if (storedData) {
       return JSON.parse(storedData);

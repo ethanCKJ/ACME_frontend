@@ -5,6 +5,8 @@ import {useCheckout} from '../../contexts/CheckoutContext';
 import api from '../api';
 import {PREMIUM_DELIVERY_FEE, STANDARD_DELIVERY_FEE} from '../constants';
 import {successMsg} from "../../pages/CheckoutPage.tsx";
+import {Simulate} from "react-dom/test-utils";
+import reset = Simulate.reset;
 
 interface CardFormProps {
   handleNext: () => void
@@ -30,44 +32,40 @@ function CardForm({handleNext, setSuccessMsg}: CardFormProps) {
   const [year, setYear] = useState("");
   const {cartContent, deliveryFee, setCartContent, setDeliveryFee, setCartCount} = useCart();
   const {checkoutData, setCheckoutData} = useCheckout();
+  const resetData = () => {
+    // Reset data on success
+    setCartContent([]);
+    setDeliveryFee(STANDARD_DELIVERY_FEE);
+    setCheckoutData({});
+    setCartCount(0);
+  }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (cardNum.length === 8) {
-      let deliveryFreeStr = "STANDARD";
-      if (deliveryFee == PREMIUM_DELIVERY_FEE) {
-        deliveryFreeStr = "PREMIUM"
-      }
-      const packet = {
-        "orderDetails": [] as object[],
-        "shipping": deliveryFreeStr,
-        ...checkoutData
-      }
+    let deliveryFreeStr = "STANDARD";
+    if (deliveryFee == PREMIUM_DELIVERY_FEE) {
+      deliveryFreeStr = "PREMIUM"
+    }
+    const payload = {
+      "orderDetails": [] as object[],
+      "shipping": deliveryFreeStr,
+      ...checkoutData
+    }
 
-      cartContent.forEach((cartObj: cartObj) => {
-        const {productId, quantity} = cartObj;
-        packet.orderDetails.push({productId, quantity});
-      })
-      console.log(packet)
-      try {
-        const res = await api.post("/order", packet)
-        console.log(res)
-        if (res.status === 200) {
-          alert("Successful Purchase!")
+    cartContent.forEach((cartObj: cartObj) => {
+      const {productId, quantity} = cartObj;
+      payload.orderDetails.push({productId, quantity});
+    })
+    console.log(payload)
+    try {
+      const res = await api.post("/order", payload);
+      setSuccessMsg(res.data);
+      alert("Successful Purchase!")
 
-          // Reset data on success
-          setCartContent([])
-          setDeliveryFee(STANDARD_DELIVERY_FEE)
-          setSuccessMsg(res.data)
-          setCheckoutData({})
-          setCartCount(0)
-          handleNext()
-        } else {
-          alert("Error in purchase")
-        }
-      } catch (err) {
-        console.log(err)
-        alert(err)
-      }
+      resetData();
+      handleNext()
+    } catch (err) {
+      console.log(err)
+      alert(err)
     }
   }
 
@@ -96,7 +94,7 @@ function CardForm({handleNext, setSuccessMsg}: CardFormProps) {
               label="Card number"
               helperText="Just type any 8 digits"
               onChange={(e) => {
-                let val = e.target.value;
+                const val = e.target.value;
                 if (reg.test(val) && val.length <= 8) {
                   setCardNum(val);
                 }

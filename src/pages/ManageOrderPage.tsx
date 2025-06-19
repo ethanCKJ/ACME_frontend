@@ -13,13 +13,15 @@ export enum OrderState {
   FULFILLED = "FULFILLED",
   CANCELLED = "CANCELLED"
 }
-export interface StaffOrderDetail{
+
+export interface StaffOrderDetail {
   productId: number,
   productName: string,
   quantity: number,
   category: ProductCategory,
 }
-export interface StaffOrder{
+
+export interface StaffOrder {
   orderId: number,
   customerName: string,
   email: string,
@@ -45,21 +47,14 @@ function ManageOrderPage() {
     try {
       const res = await api.get(`/view_orders?orderState=${tabValue.valueOf()}`)
       console.log(res)
-      if (res.status === 200){
-        setStaffOrders(res.data);
-      }
-      else {
-        console.log(res)
-      }
-    }
-    catch (e) {
+      setStaffOrders(res.data);
+    } catch (e) {
       console.log(e);
     }
   }
   useEffect(() => {
     loadOrders()
   }, [tabValue]);
-
 
 
   return (
@@ -74,10 +69,13 @@ function ManageOrderPage() {
             alignItems: "center"
           }}>
             <OrderTabs tabValue={tabValue} handleChange={handleChange}/>
-            <Button variant={"contained"} sx={{height: "30px"}} onClick={loadOrders}>Refresh</Button>
+            <Button variant={"contained"} sx={{height: "30px"}}
+                    onClick={loadOrders}>Refresh</Button>
           </Box>
-          <Box sx={{display: "flex", flexDirection: "column", marginTop: "20px", rowGap:"10px"}}>
-            {staffOrders.length > 0 ? staffOrders.map((value : StaffOrder, idx) => <OrderAccordion key={value.orderId}  index={idx} staffOrder={value} setStaffOrders={setStaffOrders} staffOrders={staffOrders}/> ) : <p>No orders to show</p>}
+          <Box sx={{display: "flex", flexDirection: "column", marginTop: "20px", rowGap: "10px"}}>
+            {staffOrders.length > 0 ? staffOrders.map((value: StaffOrder, idx) => <OrderAccordion
+                key={value.orderId} index={idx} staffOrder={value} setStaffOrders={setStaffOrders}
+                staffOrders={staffOrders}/>) : <p>No orders to show</p>}
           </Box>
         </Box>
       </>

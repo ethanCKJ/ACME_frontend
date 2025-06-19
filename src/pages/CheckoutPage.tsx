@@ -1,10 +1,12 @@
-import {useState} from 'react';
-import {Box, Typography, Button, Stepper, Step, StepLabel} from '@mui/material'
+import {useEffect, useState} from 'react';
+import {Box, Button, Step, StepLabel, Stepper, Typography} from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LoginPanel from '../components/global/LoginPanel.tsx';
 import CheckoutForm from '../components/checkout/CheckoutForm';
 import CardForm from '../components/checkout/CardForm';
 import Confirmation from "../components/checkout/Confirmation.tsx";
+import {useAuth} from "../contexts/AuthContext";
+import {Roles} from "../components/global/types";
 
 export interface successMsg {
   "orderId": number,
@@ -15,15 +17,25 @@ export interface successMsg {
 const steps = ["Login / Continue as guest", "Enter details", "Make payment", "Confirmation"]
 
 function CheckoutPage() {
+  const {role} = useAuth();
+  const [minStep, setMinStep] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  useEffect(() => {
+        const newMinStep = (role === Roles.ROLE_CUSTOMER ? 1 : 0)
+        if (activeStep < newMinStep) {
+          setActiveStep(newMinStep)
+        }
+        setMinStep(newMinStep);
+      },
+      [role])
   const [successMsg, setSuccessMsg] = useState<successMsg>({
     email: "",
     orderId: 0,
     requiredDate: ""
-  })
+  });
   const maxStep = 3;
   const handlePrevious = () => {
-    if (activeStep > 0) {
+    if (activeStep > minStep) {
       setActiveStep((prev) => prev - 1)
     }
   }

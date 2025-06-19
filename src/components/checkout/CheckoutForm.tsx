@@ -1,8 +1,10 @@
 import {Box, Button, Card, FormControl, FormLabel, TextField, Typography} from '@mui/material'
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {CheckoutData, useCheckout} from '../../contexts/CheckoutContext'
 import {FormInfo} from './FormattedField'
 import {Controller, useForm, useWatch} from "react-hook-form";
+import {useAuth} from "../../contexts/AuthContext";
+import {Roles} from "../global/types";
 
 interface CheckoutFormProps {
   handleNext: () => void
@@ -69,6 +71,13 @@ const formInfo: FormInfo[] = [
 ]
 
 function CheckoutForm({handleNext}: CheckoutFormProps) {
+  const {role} = useAuth();
+  const [disableForm, setdisableForm] = useState(false);
+  useEffect(() => {
+    if (role === Roles.ROLE_CUSTOMER){
+      setdisableForm(true);
+    }
+  }, [role]);
   const {checkoutData, setCheckoutData} = useCheckout();
   const {
     control,
@@ -105,6 +114,7 @@ function CheckoutForm({handleNext}: CheckoutFormProps) {
               name="customerName"
               rules={{required: "This field is required"}}
               control={control}
+              disabled={disableForm}
               render={({field, fieldState}) => (
                   <FormControl sx={{minWidth: "100%"}}>
                     <FormLabel>Name (required)</FormLabel>
@@ -127,6 +137,7 @@ function CheckoutForm({handleNext}: CheckoutFormProps) {
                     }
               }}
               control={control}
+              disabled={disableForm}
               render={({field, fieldState}) => (
                   <FormControl sx={{minWidth: "100%"}}>
                     <FormLabel>Email (required)</FormLabel>
@@ -145,6 +156,7 @@ function CheckoutForm({handleNext}: CheckoutFormProps) {
                 maxLength: {value: 20, message: "Maximum of 20 characters"},
               }}
               control={control}
+              disabled={disableForm}
               render={({field, fieldState}) => (
                   <FormControl sx={{minWidth: "100%"}}>
                     <FormLabel>Phone (required)</FormLabel>
@@ -160,6 +172,7 @@ function CheckoutForm({handleNext}: CheckoutFormProps) {
               name="addressLine1"
               rules={{required: "This field is required"}}
               control={control}
+              disabled={disableForm}
               render={({field, fieldState}) => (
                   <FormControl sx={{minWidth: "100%"}}>
                     <FormLabel>Address line 1 (required)</FormLabel>
@@ -174,6 +187,7 @@ function CheckoutForm({handleNext}: CheckoutFormProps) {
           <Controller
               name="addressLine2"
               control={control}
+              disabled={disableForm}
               render={({field, fieldState}) => (
                   <FormControl sx={{minWidth: "100%"}}>
                     <FormLabel>Address line 2</FormLabel>
@@ -188,6 +202,7 @@ function CheckoutForm({handleNext}: CheckoutFormProps) {
           <Controller
               name="addressLine3"
               control={control}
+              disabled={disableForm}
               render={({field, fieldState}) => (
                   <FormControl sx={{minWidth: "100%"}}>
                     <FormLabel>Address line 3</FormLabel>
@@ -202,6 +217,7 @@ function CheckoutForm({handleNext}: CheckoutFormProps) {
           <Controller
               name="city"
               control={control}
+              disabled={disableForm}
               rules={{required: "This field is required"}}
               render={({field, fieldState}) => (
                   <FormControl sx={{minWidth: "100%"}}>
@@ -217,6 +233,7 @@ function CheckoutForm({handleNext}: CheckoutFormProps) {
           <Controller
               name="postcode"
               control={control}
+              disabled={disableForm}
               rules={{required: "This field is required"}}
               render={({field, fieldState}) => (
                   <FormControl sx={{minWidth: "100%"}}>

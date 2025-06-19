@@ -8,7 +8,6 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [staffLogin, setStaffLogin] = useState(false);
-
   const onSuccess = () => {
     try{
       navigate(location.state.from)

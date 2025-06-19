@@ -3,26 +3,25 @@ import {
   AppBar,
   Box,
   Button,
-  ButtonGroup,
-  Toolbar,
-  Typography,
-  IconButton,
-  Drawer,
   Divider,
+  Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Toolbar,
+  Typography
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import {TOKEN_KEY} from "../constants.ts";
 import {useNavigate} from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import {useAuth} from "../../contexts/AuthContext";
+import {Roles} from "./types";
 
 interface SidebarButtonProps {
   text: string,
@@ -30,62 +29,55 @@ interface SidebarButtonProps {
   icon: ReactNode
 }
 
-interface SidebarProps{
+interface SidebarProps {
   title: string,
 }
+
 const drawerWidth = 240;
+
 function Sidebar() {
+  const {logout, role} = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const toggleDrawer = () => {
     setOpen(prevState => !prevState)
   }
-  const handleLogout = () =>{
-    localStorage.setItem(TOKEN_KEY,"")
+  const handleLogout = () => {
+    logout();
     navigate("/")
   }
   const title = "Manage Orders"
-  const SidebarButton = ({text, href, icon} : SidebarButtonProps) => (
+  const SidebarButton = ({text, href, icon}: SidebarButtonProps) => (
       <ListItem key={text} disablePadding>
         <ListItemButton href={href}>
           <ListItemIcon>
             {icon}
           </ListItemIcon>
-          <ListItemText primary={text} />
+          <ListItemText primary={text}/>
         </ListItemButton>
       </ListItem>
   )
-  const token = localStorage.getItem(TOKEN_KEY)
-  let roles = "";
-  try {
-    const jwt = jwtDecode(token)
-    roles = jwt.roles;
-  } catch {
-    navigate("/login")
-  }
-  if (roles === ""){
-    navigate("/login")
-  }
   return (
       <>
-        <AppBar position="static" sx={{height: "60px", display:"flex", justifyContent:"center"}}>
+        <AppBar position="static" sx={{height: "60px", display: "flex", justifyContent: "center"}}>
           <Toolbar>
-              <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={toggleDrawer}
-                  edge="start"
-                  sx={[
-                    {
-                      ml: "6px",
-                      // position:"fixed",
-                    },
-                  ]}
-              >
-                <MenuIcon/>
-              </IconButton>
-            <Box display={"flex"} justifyContent={"flex-start"} padding={"20px"} flexGrow={1} alignItems={"center"}>
-              <Typography sx={{marginLeft:"200px"}} fontWeight={"bold"} fontSize={"20px"}>{title}</Typography>
+            <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={toggleDrawer}
+                edge="start"
+                sx={[
+                  {
+                    ml: "6px",
+                  },
+                ]}
+            >
+              <MenuIcon/>
+            </IconButton>
+            <Box display={"flex"} justifyContent={"flex-start"} padding={"20px"} flexGrow={1}
+                 alignItems={"center"}>
+              <Typography sx={{marginLeft: "200px"}} fontWeight={"bold"}
+                          fontSize={"20px"}>{title}</Typography>
             </Box>
           </Toolbar>
         </AppBar>
@@ -103,19 +95,33 @@ function Sidebar() {
             open={open}
         >
           {/*Drawer header*/}
-          <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", padding:"0px 30px", height:"60px"}} bgcolor={"primary"}>
+          <Box sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            padding: "0px 30px",
+            height: "60px"
+          }} bgcolor={"primary"}>
             <IconButton onClick={toggleDrawer}>
               <MenuIcon/>
             </IconButton>
           </Box>
-          <Divider />
+          <Divider/>
           <List>
-            <SidebarButton text={"Manage Orders"} href={"/manage_orders"} icon={<ShoppingCartOutlinedIcon/>}/>
-            <SidebarButton text={"Add staff"} href={"/add_staff"} icon={<PersonAddAltOutlinedIcon/>}/>
-            <SidebarButton text={"Manage products"} href={"/manage_products"} icon={<StorefrontOutlinedIcon/>}/>
+            <SidebarButton text={"Manage Orders"} href={"/manage_orders"}
+                           icon={<ShoppingCartOutlinedIcon/>}/>
+            {role === Roles.ROLE_ADMIN ? <>
+                  <SidebarButton text={"Add staff"} href={"/add_staff"}
+                                 icon={<PersonAddAltOutlinedIcon/>}/>
+                  <SidebarButton text={"Manage products"} href={"/manage_products"}
+                                 icon={<StorefrontOutlinedIcon/>}/>
+                </>
+                :
+                null
+            }
           </List>
-          <Divider />
-          <Button variant="outlined" startIcon={<LogoutOutlinedIcon />} onClick={handleLogout}>
+          <Divider/>
+          <Button variant="outlined" startIcon={<LogoutOutlinedIcon/>} onClick={handleLogout}>
             Log out
           </Button>
         </Drawer>
