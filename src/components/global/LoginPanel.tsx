@@ -1,11 +1,11 @@
 import React, {useState} from 'react'
-import {Box, Card, FormControl, FormLabel, Typography, TextField, Button, Link} from '@mui/material'
-import api from "../api.ts";
-import {TOKEN_KEY} from "../constants.ts";
-import {jwtDecode, JwtPayload} from "jwt-decode";
+import {Box, Button, Card, FormControl, FormLabel, TextField, Typography} from '@mui/material'
+import api from "../../utils/api.ts";
+import {jwtDecode} from "jwt-decode";
 import {useCheckout} from "../../contexts/CheckoutContext";
 import {CustomJwtPayload, useAuth} from "../../contexts/AuthContext";
 import {Roles} from "./types";
+import {Link, useLocation} from "react-router-dom";
 
 interface LoginPanelProps {
   onSuccess?: () => void;
@@ -14,7 +14,10 @@ interface LoginPanelProps {
 function LoginPanel({onSuccess}: LoginPanelProps) {
   const [passwordError, setPasswordError] = useState(false);
   const {setCheckoutData} = useCheckout();
-  const {setAuthenticated, login} = useAuth();
+  const {login} = useAuth();
+  const location = useLocation();
+
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formdata = new FormData(event.currentTarget);
@@ -24,11 +27,10 @@ function LoginPanel({onSuccess}: LoginPanelProps) {
     try {
       const res = await api.post("/token", {username, password})
       const token = res.data;
-
       login(token);
       const jwt: CustomJwtPayload = jwtDecode(token);
-
-      if (Roles[jwt.roles] === Roles.ROLE_CUSTOMER) {
+      const currentRole = Roles[jwt.roles];
+      if (currentRole === Roles.ROLE_CUSTOMER) {
         try {
           const userRes = await api.get("me/customer_profile_info");
           setCheckoutData({
@@ -41,9 +43,9 @@ function LoginPanel({onSuccess}: LoginPanelProps) {
           setPasswordError(true);
         }
       }
+
       console.log("Successful login")
       if (onSuccess) {
-        setAuthenticated(true);
         onSuccess();
       }
 
@@ -98,7 +100,7 @@ function LoginPanel({onSuccess}: LoginPanelProps) {
           </FormControl>
           <Button variant='contained' type="submit">Sign in</Button>
           <Typography>Don&apos;t have an account?{' '}
-            <Link href="/public" color='info'>Sign up</Link>
+            <Link to="/customer/signup" state={{from: location}}>Sign up</Link>
           </Typography>
         </Box>
       </Card>

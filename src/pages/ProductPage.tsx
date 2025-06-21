@@ -12,12 +12,15 @@ import {
 import {useEffect, useMemo, useState} from 'react'
 import api from '../utils/api'
 import Header from '../components/home/Header'
-import ProductCard from '../components/ProductCard'
-import ShoppingCartPanel from '../components/ShoppingCartPanel'
+import ProductCard from '../components/product/ProductCard'
+import ShoppingCartPanel from '../components/product/ShoppingCartPanel'
 import {useCart} from '../contexts/CartContext'
 import {centsToDollar} from '../utils/cent2Dollar'
 import {ProductCategory} from "../components/global/types";
 
+interface ProductPageProps {
+  category: string,
+}
 interface Product {
   id: number,
   productInfo: string,
@@ -82,7 +85,7 @@ const FilterPanel = ({priceRange, handleSliderUpdate, getProducts}: FilterPanelP
         </Box>
       </Box>
       <Button variant="outlined" sx={{padding: "2px", marginTop: "10px"}}
-              onClick={() => getProducts("cookie")}>Apply</Button>
+              onClick={() => getProducts(category)}>Apply</Button>
     </Box>
 );
 
@@ -104,23 +107,26 @@ const NoProductsAvailable = () => {
       </Box>)
 }
 
-function CookiePage() {
+function ProductPage({category} : ProductPageProps) {
   const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice])
   const [sortOrder, setSortOrder] = useState<string>("Popularity")
   const [products, setProducts] = useState<Product[]>([])
   const {addToCart} = useCart();
+  const [loading, setLoading] = useState(false);
 
   const getProducts = async (category: string) => {
+    setLoading(true);
     try {
       const res = await api.get(`/products/${category}?minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`)
       setProducts(res.data)
     } catch (error) {
       console.log(error)
     }
+    setLoading(false);
   }
   // Gets products once when component is loaded.
   useEffect(() => {
-    getProducts("cookie")
+    getProducts(category)
   }, [])
 
   const handleSortOrderChange = (event: SelectChangeEvent<string>) => {
@@ -150,6 +156,7 @@ function CookiePage() {
     }
     return newArray;
   }, [sortOrder, products])
+
 
   return (
       <>
@@ -194,7 +201,7 @@ function CookiePage() {
               </FormControl>
             </Box>
             {/* Main products display */}
-            {(products === undefined || products.length === 0) ?
+            {(products === undefined || products.length === 0 && !loading) ?
                 <NoProductsAvailable/>
                 :
                 <Box sx={{
@@ -205,21 +212,21 @@ function CookiePage() {
                   marginLeft: "20px",
                   flexWrap: "wrap"
                 }}>
-                  {displayedProducts.map((value) => <ProductCard key={value.id} productId={value.id}
+                  {displayedProducts.map((value: Product) => <ProductCard key={value.id} productId={value.id}
                                                                  imageName={value.imageName}
                                                                  productName={value.productName}
                                                                  productInfo={value.productInfo}
                                                                  price={value.price}
-                                                                 addToCart={addToCart}/>)}
+                                                                 productCategory={value.productCategory}
+                                                                 />)}
                 </Box>
-
             }
           </Box>
-          <ShoppingCartPanel/>
+          <ShoppingCartPanel />
 
         </Box>
       </>
   )
 }
 
-export default CookiePage
+export default ProductPage

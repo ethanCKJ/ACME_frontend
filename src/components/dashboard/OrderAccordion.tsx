@@ -16,7 +16,7 @@ import {
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {OrderState, StaffOrder, StaffOrderDetail} from "../../pages/ManageOrderPage";
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
-import api from '../api';
+import api from '../../utils/api';
 
 interface OrderAccordionProps {
   staffOrder: StaffOrder,

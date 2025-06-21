@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react'
-import {TOKEN_KEY} from "../constants.ts";
+import {TOKEN_KEY} from "../../utils/constants.ts";
 import {jwtDecode, JwtPayload} from "jwt-decode";
 import {Navigate, useLocation} from "react-router-dom";
 

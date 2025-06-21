@@ -35,7 +35,7 @@ interface SidebarProps {
 
 const drawerWidth = 240;
 
-function Sidebar() {
+function Sidebar({title}: SidebarProps) {
   const {logout, role} = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -46,7 +46,6 @@ function Sidebar() {
     logout();
     navigate("/")
   }
-  const title = "Manage Orders"
   const SidebarButton = ({text, href, icon}: SidebarButtonProps) => (
       <ListItem key={text} disablePadding>
         <ListItemButton href={href}>

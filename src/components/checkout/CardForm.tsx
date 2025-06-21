@@ -2,8 +2,8 @@ import React, {useState} from 'react'
 import {Box, Button, Card, FormControl, MenuItem, TextField, Typography} from '@mui/material'
 import {cartObj, useCart} from '../../contexts/CartContext';
 import {useCheckout} from '../../contexts/CheckoutContext';
-import api from '../api';
-import {PREMIUM_DELIVERY_FEE, STANDARD_DELIVERY_FEE} from '../constants';
+import api from '../../utils/api';
+import {PREMIUM_DELIVERY_FEE, STANDARD_DELIVERY_FEE} from '../../utils/constants';
 import {successMsg} from "../../pages/CheckoutPage.tsx";
 import {Simulate} from "react-dom/test-utils";
 import reset = Simulate.reset;

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import Sidebar from '../components/global/Sidebar.tsx';
 import OrderTabs from "../components/dashboard/OrderTabs";
-import api from "../components/api";
-import {Box, Button} from "@mui/material";
+import api from "../utils/api";
+import {Box, Button, Typography, Snackbar} from "@mui/material";
 import OrderAccordion from "../components/dashboard/OrderAccordion";
 import {ProductCategory} from "../components/global/types";
 
@@ -39,6 +39,7 @@ export interface StaffOrder {
 
 function ManageOrderPage() {
   const [tabValue, setTabValue] = useState(OrderState.NOT_READY);
+  const [open, setOpen] = useState(false);
   const handleChange = (event: React.SyntheticEvent, newValue: OrderState) => {
     setTabValue(newValue);
   };
@@ -59,7 +60,14 @@ function ManageOrderPage() {
 
   return (
       <>
-        <Sidebar/>
+        <Snackbar
+            open={open}
+            autoHideDuration={800}
+            message="Orders up to date"
+            onClose={() => setOpen(false)}
+            anchorOrigin={{ vertical:"top", horizontal:"center" }}
+        />
+        <Sidebar title="Manage Orders"/>
         <Box sx={{width: "100%", background: "ivory", height: "100%", padding: "5px 20px"}}>
           <Box sx={{
             width: '100%',
@@ -70,7 +78,10 @@ function ManageOrderPage() {
           }}>
             <OrderTabs tabValue={tabValue} handleChange={handleChange}/>
             <Button variant={"contained"} sx={{height: "30px"}}
-                    onClick={loadOrders}>Refresh</Button>
+                    onClick={()=>{
+                      loadOrders();
+                      setOpen(true);
+                    }}>Refresh</Button>
           </Box>
           <Box sx={{display: "flex", flexDirection: "column", marginTop: "20px", rowGap: "10px"}}>
             {staffOrders.length > 0 ? staffOrders.map((value: StaffOrder, idx) => <OrderAccordion

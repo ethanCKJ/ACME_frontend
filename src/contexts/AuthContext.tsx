@@ -1,6 +1,6 @@
 import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react'
 import {Roles} from "../components/global/types";
-import {TOKEN_KEY} from "../components/constants";
+import {TOKEN_KEY} from "../utils/constants";
 import {jwtDecode, JwtPayload} from "jwt-decode";
 
 type AuthContextInterface = {
@@ -9,7 +9,7 @@ type AuthContextInterface = {
   role: Roles,
   setRole: React.Dispatch<React.SetStateAction<Roles>>,
   logout: () => void,
-  login: () => void,
+  login: (token: string) => void,
 }
 
 const AuthContext = createContext<AuthContextInterface | undefined>(undefined)
@@ -40,7 +40,9 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     if (token) {
       localStorage.setItem(TOKEN_KEY, token);
       const jwt: CustomJwtPayload = jwtDecode(token);
-      setRole(jwt.roles);
+      if (jwt.roles !== undefined){
+        setRole(jwt.roles);
+      }
       setAuthenticated(true);
     }
   }
