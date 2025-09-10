@@ -1,4 +1,10 @@
-import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 // 1. Content provided by the context
 export interface CheckoutData {
@@ -22,42 +28,51 @@ export const defaultCheckoutData = {
   addressLine3: "",
   postcode: "",
   city: "",
-  phone: ""
-}
+  phone: "",
+};
 
-export type Action = { type: "set"; key: string; value: string; } | { type: "reset" }
-
+export type Action =
+  | { type: "set"; key: string; value: string }
+  | { type: "reset" };
 
 interface CheckoutContextInterface {
   checkoutData: CheckoutData;
-  setCheckoutData: React.Dispatch<any>
+  setCheckoutData: React.Dispatch<CheckoutData>;
 }
 
 // 2. create context
-export const CheckoutContext = createContext<CheckoutContextInterface | undefined>(undefined)
+export const CheckoutContext = createContext<
+  CheckoutContextInterface | undefined
+>(undefined);
 
 // 3. export Provider component
-export const CheckoutProvider = ({children}: { children: ReactNode }) => {
+export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
   const [checkoutData, setCheckoutData] = useState<CheckoutData>(() => {
-    const storedData = localStorage.getItem("checkoutData")
+    const storedData = localStorage.getItem("checkoutData");
     if (storedData) {
       return JSON.parse(storedData);
     }
     return defaultCheckoutData;
   });
   useEffect(() => {
-    localStorage.setItem("checkoutData", JSON.stringify(checkoutData))
-  }, [checkoutData])
+    localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+  }, [checkoutData]);
 
-  return <CheckoutContext.Provider value={{
-    checkoutData,
-    setCheckoutData,
-  }}>{children}</CheckoutContext.Provider>
-}
+  return (
+    <CheckoutContext.Provider
+      value={{
+        checkoutData,
+        setCheckoutData,
+      }}
+    >
+      {children}
+    </CheckoutContext.Provider>
+  );
+};
 export const useCheckout = () => {
   const context = useContext(CheckoutContext);
   if (context === undefined) {
-    throw Error("You must be under <CheckoutContext></CheckoutContext>")
+    throw Error("You must be under <CheckoutContext></CheckoutContext>");
   }
   return context;
-}
+};
