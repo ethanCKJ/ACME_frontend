@@ -19,7 +19,6 @@ const CartItem = ({
   setQuantity,
   category,
 }: CartItemProps) => {
-  console.log(category);
   return (
     <Box
       sx={{

@@ -16,6 +16,7 @@ export type cartObj = {
   quantity: number;
   price: number;
   productCategory: ProductCategory;
+  stock: number; // Added stock property
 };
 
 // 1. Define the types of the const items provided by the context
@@ -72,7 +73,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       if (item.productId === product.productId) {
         // shallow copy only one item. shallow copying is sufficient given cartObj is made of primitives.
         const newItem = { ...item };
-        newItem.quantity += product.quantity;
+        newItem.quantity = Math.min(product.quantity + item.quantity, item.stock);
         updatedExisting = true;
         return newItem;
       }
@@ -88,6 +89,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         price: product.price,
         imageName: product.imageName,
         productCategory: product.productCategory,
+        stock: product.stock, // Include stock when adding new product
       });
       setCartCount((cartCount) => (cartCount += 1));
     }
@@ -104,8 +106,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const newCartContent: cartObj[] = [];
     for (let i = 0; i < cartContent.length; i++) {
       const currentItem = cartContent[i];
-      if (currentItem.productId === targetProductId) {
-        // Product with updated quantity. If quantity set to 0 then product is deleted.
+      // Do not update quantity if attempting to exceed available stock.
+      if (currentItem.productId === targetProductId && newQuantity <= currentItem.stock) {
+        // Product with updated quantity. If quantity is 0 or less, product is deleted by not including it in the new quantity.
         if (newQuantity > 0) {
           newCartContent.push({ ...currentItem, quantity: newQuantity });
         }

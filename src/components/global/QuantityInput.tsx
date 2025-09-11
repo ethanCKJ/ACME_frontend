@@ -7,6 +7,14 @@ interface QuantityInputProps {
   setQuantity: (quantity: number) => void;
   quantity: number;
 }
+
+/**
+ * Take a quantity state to display and its associated setQuantity to increment or decrement the quantity
+ *
+ * @param setQuantity
+ * @param quantity
+ * @constructor
+ */
 function QuantityInput({ setQuantity, quantity }: QuantityInputProps) {
   const handleQuantityIncrement = (
     event: React.MouseEvent<HTMLButtonElement>,

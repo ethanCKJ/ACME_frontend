@@ -18,10 +18,11 @@ export default function ProductModal({
   productInfo,
   price,
   imageName,
+  stock,
   productCategory,
 }: ProductModalProps) {
   const [quantity, setQuantity] = useState<number>(1);
-  const { addToCart } = useCart();
+  const { addToCart } = useCart()
 
   useEffect(() => {
     if (open) {
@@ -42,10 +43,10 @@ export default function ProductModal({
           <Typography fontSize={"18px"}>{productName}</Typography>
           <Typography>{productInfo}</Typography>
           <Typography>{`Price $${centsToDollar(price)} per unit`}</Typography>
+          <Typography>{`In stock: ${stock}`}</Typography>
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
               padding: "0px 5px",
             }}
@@ -54,7 +55,7 @@ export default function ProductModal({
             <QuantityInput quantity={quantity} setQuantity={setQuantity} />
             <Button
               variant="outlined"
-              sx={{ marginLeft: "80px" }}
+              sx={{ marginLeft: "auto" }}
               onClick={() => {
                 const newItem: cartObj = {
                   productId,
@@ -63,6 +64,7 @@ export default function ProductModal({
                   price,
                   imageName,
                   productCategory,
+                  stock, // Added stock property
                 };
                 addToCart(newItem);
                 setOpen(false);

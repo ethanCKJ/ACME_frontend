@@ -278,6 +278,7 @@ function ProductPage({ category }: ProductPageProps) {
                   productName={value.productName}
                   productInfo={value.productInfo}
                   price={value.price}
+                  stock={value.stock}
                   productCategory={value.productCategory}
                 />
               ))}
