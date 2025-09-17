@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { STANDARD_DELIVERY_FEE } from "../utils/constants";
-import { ProductCategory } from "../components/global/types";
+import { ProductCategory } from "../types/types";
 
 // Structure of each unique product in the cart
 export type cartObj = {

@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Roles } from "../components/global/types";
+import { Roles } from "../types/types";
 import { TOKEN_KEY } from "../utils/constants";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 

@@ -1,24 +1,19 @@
-import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Step,
-  StepLabel,
-  Stepper,
-  Typography,
-} from "@mui/material";
+import {useEffect, useState} from "react";
+import {Box, Button, Step, StepLabel, Stepper, Typography,} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import LoginPanel from "../components/global/LoginPanel.tsx";
-import CheckoutForm from "../components/checkout/CheckoutForm";
-import CardForm from "../components/checkout/CardForm";
-import Confirmation from "../components/checkout/Confirmation.tsx";
-import { useAuth } from "../contexts/AuthContext";
-import { Roles } from "../components/global/types";
+import LoginPanel from "../features/auth/component/LoginPanel";
+import CheckoutForm from "../features/checkout/components/CheckoutForm";
+import CardForm from "../features/checkout/components/CardForm";
+import OrderSuccessOrFailure from "../features/checkout/components/OrderSuccessOrFailure";
+import {useAuth} from "../contexts/AuthContext";
+import {Roles} from "../types/types";
+import {useCheckoutStepping} from "../features/checkout/util/useCheckoutStepping";
 
-export interface successMsg {
+export interface OrderStatus {
   orderId: number;
   email: string;
   requiredDate: string;
+  isSuccess: boolean;
 }
 
 const steps = [
@@ -28,33 +23,30 @@ const steps = [
   "Confirmation",
 ];
 
+/**
+ * Page handle full checkout flow
+ * 1. sign in or continue as guest
+ * 2. enter shipping and billing details
+ * 3. make payment
+ * 4. order confirmation
+ * @constructor
+ */
 function CheckoutPage() {
   const { role } = useAuth();
-  const [minStep, setMinStep] = useState(0);
-  const [activeStep, setActiveStep] = useState(0);
-  useEffect(() => {
-    const newMinStep = role === Roles.ROLE_CUSTOMER ? 1 : 0;
-    if (activeStep < newMinStep) {
-      setActiveStep(newMinStep);
-    }
-    setMinStep(newMinStep);
-  }, [role]);
-  const [successMsg, setSuccessMsg] = useState<successMsg>({
+  const {activeStep, handlePrevious, handleNext, disableStep } = useCheckoutStepping({maxStep: 3});
+
+  // When order is submitted, the order status is stored here to be displayed on the confirmation step
+  const [orderStatus, setOrderStatus] = useState<OrderStatus>({
     email: "",
     orderId: 0,
     requiredDate: "",
+    isSuccess: false,
   });
-  const maxStep = 3;
-  const handlePrevious = () => {
-    if (activeStep > minStep) {
-      setActiveStep((prev) => prev - 1);
-    }
-  };
-  const handleNext = () => {
-    if (activeStep < maxStep) {
-      setActiveStep((prev) => prev + 1);
-    }
-  };
+  // When logged in, make 0 a disabled step which moves the user to step 1.
+  const onCustomerLoginSuccess = () => {
+    disableStep(0);
+  }
+
   return (
     <>
       {/* Header */}
@@ -130,7 +122,7 @@ function CheckoutPage() {
           >
             {activeStep === 0 ? (
               <>
-                <LoginPanel />
+                <LoginPanel allowedRoles={[Roles.ROLE_CUSTOMER]} onCustomerLoginSuccess={onCustomerLoginSuccess}/>
                 <Button variant="outlined" onClick={handleNext}>
                   Checkout as guest
                 </Button>
@@ -138,9 +130,9 @@ function CheckoutPage() {
             ) : null}
             {activeStep === 1 ? <CheckoutForm handleNext={handleNext} /> : null}
             {activeStep === 2 ? (
-              <CardForm handleNext={handleNext} setSuccessMsg={setSuccessMsg} />
+              <CardForm handleNext={handleNext} setSuccessMsg={setOrderStatus} />
             ) : null}
-            {activeStep === 3 ? <Confirmation successMsg={successMsg} /> : null}
+            {activeStep === 3 ? <OrderSuccessOrFailure orderStatus={orderStatus} /> : null}
           </Box>
         </Box>
       </Box>

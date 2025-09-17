@@ -1,21 +1,13 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Slider,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import {Box, FormControl, MenuItem, Select, SelectChangeEvent, Typography,} from "@mui/material";
+import {useEffect, useMemo, useState} from "react";
 import api from "../utils/api";
-import Header from "../components/home/Header";
-import ProductCard from "../components/product/ProductCard";
-import ShoppingCartPanel from "../components/product/ShoppingCartPanel";
-import { centsToDollar } from "../utils/cent2Dollar";
-import { ProductCategory } from "../components/global/types";
+import Header from "../features/home/Header";
+import ProductCard from "../features/product/components/ProductCard";
+import ShoppingCartPanel from "../features/product/components/ShoppingCartPanel";
+import {ProductCategory} from "../types/types";
+import {maxPrice, minPrice, sortOrderOptions} from "../features/product/constants/product-contants";
+import {FilterPanel} from "../features/product/components/FilterPanel";
+import {NoProductsAvailable} from "../features/product/components/NoProductsAvailable";
 
 interface ProductPageProps {
   category: string;
@@ -32,118 +24,11 @@ interface Product {
   isDiscontinued: boolean;
 }
 
-interface FilterPanelProps {
-  priceRange: number[];
-  handleSliderUpdate: (e: Event, value: number | number[]) => void;
-  getProducts: () => void;
-}
-
-const sortOrderOptions = [
-  "Popularity",
-  "Price high to low",
-  "Price low to high",
-  "A to Z",
-  "Z to A",
-];
-const maxPrice = 1000;
-const minPrice = 0;
-
-const FilterPanel = ({
-  priceRange,
-  handleSliderUpdate,
-  getProducts,
-}: FilterPanelProps) => (
-  <Box sx={{ minWidth: "200px", padding: "5px" }}>
-    <Typography fontSize={24}>Filter by</Typography>
-    <hr></hr>
-    <Typography fontSize={16}>Price</Typography>
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <Slider
-        getAriaLabel={() => "Select maximum and minimum price"}
-        value={priceRange}
-        onChange={handleSliderUpdate}
-        sx={{ width: "180px" }}
-        disableSwap
-        min={minPrice}
-        max={maxPrice}
-      />
-    </Box>
-    <Box
-      sx={{
-        display: "flex",
-        wrap: "nowrap",
-        marginTop: "10px",
-        justifyContent: "space-between",
-      }}
-    >
-      <Box
-        sx={{ display: "flex", flexDirection: "column", margin: 0, padding: 0 }}
-      >
-        <Typography fontSize={"14px"} sx={{ marginLeft: "2px" }}>
-          Min
-        </Typography>
-        <Typography
-          sx={{
-            border: "1px solid black",
-            width: "50px",
-            padding: "0px 2px",
-            borderRadius: "4px",
-          }}
-        >
-          {centsToDollar(priceRange[0])}
-        </Typography>
-      </Box>
-      <Box
-        sx={{ display: "flex", flexDirection: "column", margin: 0, padding: 0 }}
-      >
-        <Typography fontSize={"14px"} sx={{ marginLeft: "2px" }}>
-          Max
-        </Typography>
-        <Typography
-          sx={{
-            border: "1px solid black",
-            width: "50px",
-            padding: "0px 2px",
-            borderRadius: "4px",
-          }}
-        >
-          {centsToDollar(priceRange[1])}
-        </Typography>
-      </Box>
-    </Box>
-    <Button
-      variant="outlined"
-      sx={{ padding: "2px", marginTop: "10px" }}
-      onClick={() => getProducts()}
-    >
-      Apply
-    </Button>
-  </Box>
-);
-
-const NoProductsAvailable = () => {
-  const theme = useTheme();
-  return (
-    <Box
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "800px",
-          height: "200px",
-          border: `5px solid ${theme.palette.primary.light}`,
-          borderRadius: "10px",
-        }}
-      >
-        <Typography variant="h4">No products match your filter</Typography>
-      </Box>
-    </Box>
-  );
-};
-
+/**
+ * Page displaying all products in a given category, with filtering and sorting options.
+ * @param category
+ * @constructor
+ */
 function ProductPage({ category }: ProductPageProps) {
   const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
   const [sortOrder, setSortOrder] = useState<string>("Popularity");

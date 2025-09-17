@@ -8,12 +8,12 @@ import Home from "./pages/Home";
 import { themeOptions } from "./theme";
 import { CartProvider } from "./contexts/CartContext";
 import { CheckoutProvider } from "./contexts/CheckoutContext";
-import Login from "./pages/Login.tsx";
+import Login from "./pages/auth/Login.tsx";
 import ProtectedRoutes from "./components/protection/ProtectedRoutes.tsx";
-import ManageOrderPage from "./pages/ManageOrderPage.tsx";
+import ManageOrderPage from "./pages/staff-exclusive/ManageOrderPage.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
-import CustomerSignupPage from "./pages/CustomerSignupPage";
-import StaffSignupPage from "./pages/StaffSignupPage";
+import CustomerSignupPage from "./pages/account/CustomerSignupPage";
+import StaffSignupPage from "./pages/account/StaffSignupPage";
 import ProductPage from "./pages/ProductPage";
 
 declare module "@mui/material/styles" {
@@ -35,8 +35,6 @@ function App() {
   const theme = useMemo(() => {
     return createTheme(themeOptions);
   }, []);
-
-  console.log("App rendered");
 
   return (
     <AuthProvider>
@@ -62,7 +60,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/staff_signup"
+                  path="/add_staff"
                   element={
                     <ProtectedRoutes allowsRoles={["ROLE_ADMIN"]}>
                       <StaffSignupPage />

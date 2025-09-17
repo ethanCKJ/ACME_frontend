@@ -1,9 +1,9 @@
 import React from "react";
-import Header from "../components/home/Header";
+import Header from "../features/home/Header";
 import { Box, Typography } from "@mui/material";
-import PromoCarousel from "../components/home/PromoCarousel";
-import HomeCard from "../components/home/HomeCard";
-import Footer from "../components/home/Footer";
+import PromoCarousel from "../features/home/PromoCarousel";
+import HomeCard from "../features/home/HomeCard";
+import Footer from "../features/home/Footer";
 
 const data = [
   {
